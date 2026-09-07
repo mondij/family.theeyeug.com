@@ -1,0 +1,42 @@
+---
+/**
+ * SectionTitle
+ * The editorial header used at the top of most homepage sections:
+ * a short sentence-case kicker, a large display heading, and an
+ * optional supporting line. Alignment defaults to left (magazine-style),
+ * with a centered option for narrower, single-column moments.
+ */
+interface Props {
+  kicker?: string;
+  heading: string;
+  supporting?: string;
+  align?: 'left' | 'center';
+  tone?: 'light' | 'dark';
+  class?: string;
+}
+
+const { kicker, heading, supporting, align = 'left', tone = 'light', class: className } = Astro.props;
+---
+
+<div
+  class:list={[
+    'flex flex-col gap-4',
+    align === 'center' ? 'items-center text-center mx-auto max-w-2xl' : 'items-start text-left',
+    className,
+  ]}
+>
+  {kicker && <p class="kicker">{kicker}</p>}
+  <h2
+    class:list={[
+      'text-4xl sm:text-5xl',
+      tone === 'dark' ? 'text-linen' : 'text-ink',
+    ]}
+  >
+    {heading}
+  </h2>
+  {supporting && (
+    <p class:list={['text-lg', tone === 'dark' ? 'text-sand' : 'text-ink-soft']}>
+      {supporting}
+    </p>
+  )}
+</div>

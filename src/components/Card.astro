@@ -1,0 +1,24 @@
+---
+/**
+ * Card
+ * General-purpose surface for text-led content: tips, advice, quotes,
+ * stats. For image-forward destination/journal previews use ImageCard.
+ */
+interface Props {
+  href?: string;
+  padding?: 'default' | 'spacious';
+  hover?: boolean;
+  class?: string;
+}
+
+const { href, padding = 'default', hover = true, class: className } = Astro.props;
+const paddingClass = padding === 'spacious' ? 'p-8 sm:p-10' : 'p-6 sm:p-7';
+const Tag = href ? 'a' : 'div';
+---
+
+<Tag
+  href={href}
+  class:list={['card', hover && 'card-hover', paddingClass, 'block h-full', className]}
+>
+  <slot />
+</Tag>

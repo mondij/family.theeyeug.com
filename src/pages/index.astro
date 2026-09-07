@@ -1,0 +1,227 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Container from '../components/Container.astro';
+import Button from '../components/Button.astro';
+import Badge from '../components/Badge.astro';
+import Card from '../components/Card.astro';
+import ImageCard from '../components/ImageCard.astro';
+import SectionTitle from '../components/SectionTitle.astro';
+import { Image } from 'astro:assets';
+
+import heroImage from '../assets/images/hero-coastline.jpg';
+import tropical from '../assets/images/destination-tropical.jpg';
+import mountain from '../assets/images/destination-mountain.jpg';
+import desert from '../assets/images/destination-desert.jpg';
+import city from '../assets/images/destination-city.jpg';
+import journalBanner from '../assets/images/journal-banner.jpg';
+
+const picks = [
+  {
+    image: tropical,
+    alt: 'Abstract sunset illustration of a tropical coastline with palm trees',
+    title: 'Island calm, built for little legs',
+    meta: 'Beach · Value to mid-range',
+    href: '/destinations',
+    tag: 'Family favourite',
+  },
+  {
+    image: mountain,
+    alt: 'Abstract illustration of layered alpine mountain ridges at dawn',
+    title: 'Alpine air and easy trails',
+    meta: 'Adventure · Mid-range',
+    href: '/destinations',
+    tag: 'Great for tweens',
+  },
+  {
+    image: desert,
+    alt: 'Abstract illustration of warm desert dunes under a golden sky',
+    title: 'Wide-open desert adventure',
+    meta: 'Nature · Mid-range to luxury',
+    href: '/destinations',
+    tag: 'Multigenerational',
+  },
+  {
+    image: city,
+    alt: 'Abstract illustration of a city skyline at dusk',
+    title: 'A city that keeps kids curious',
+    meta: 'City · Culture',
+    href: '/destinations',
+    tag: 'School-holiday ready',
+  },
+];
+
+const values = [
+  {
+    title: 'Written for parents, not algorithms',
+    body: 'Every guide is shaped around nap schedules, fussy eaters, and what actually happens when you travel with kids — not generic listicle filler.',
+  },
+  {
+    title: 'Filtered by age and trip style',
+    body: 'Tell us who is coming and what kind of trip you want. We narrow thousands of options down to the handful worth your time.',
+  },
+  {
+    title: 'Honest about cost, always',
+    body: 'Starting prices, typical extras, and what tends to catch families out — laid out plainly, before you click through to book.',
+  },
+];
+---
+
+<BaseLayout
+  title="Nestward — family trip planning, done beautifully"
+  description="Nestward helps parents plan family vacations with editorial destination guides, honest pricing, and trip advice built for real families."
+>
+  <!-- Hero -->
+  <section class="relative flex min-h-[100svh] items-end overflow-hidden bg-ink">
+    <Image
+      src={heroImage}
+      alt="Abstract sunset illustration over a calm ocean horizon"
+      widths={[768, 1280, 1920, 2400]}
+      sizes="100vw"
+      class="absolute inset-0 h-full w-full object-cover"
+      priority
+    />
+    <div class="absolute inset-0 bg-gradient-to-t from-ink via-ink/35 to-ink/10"></div>
+
+    <Container size="wide" class="relative z-10 pb-20 pt-40 sm:pb-28">
+      <div class="max-w-2xl">
+        <p class="kicker !text-coral-light">Family travel, planned properly</p>
+        <h1 class="mt-4 text-5xl text-linen sm:text-6xl lg:text-7xl">
+          Trips your kids will talk about for years.
+        </h1>
+        <p class="mt-6 max-w-xl text-lg text-sand/90 sm:text-xl">
+          Nestward pairs editorial destination guides with honest, family-first
+          advice — so planning your next holiday feels as good as the trip itself.
+        </p>
+        <div class="mt-9 flex flex-wrap gap-4">
+          <Button href="/plan" variant="primary">Start planning</Button>
+          <Button href="/destinations" variant="on-dark">Browse destinations</Button>
+        </div>
+      </div>
+    </Container>
+  </section>
+
+  <!-- Editor's picks: asymmetric magazine grid -->
+  <section class="section">
+    <Container size="wide">
+      <SectionTitle
+        kicker="Editor’s picks"
+        heading="Destinations worth building a trip around"
+        supporting="A rotating shortlist from our editors, chosen for the moments they create rather than how well they photograph."
+      />
+
+      <div class="mt-12 grid items-start gap-6 lg:grid-cols-12">
+        <ImageCard
+          href={picks[0].href}
+          image={picks[0].image}
+          imageAlt={picks[0].alt}
+          title={picks[0].title}
+          meta={picks[0].meta}
+          aspect="square"
+          priority
+          class="lg:col-span-7"
+        >
+          <Badge slot="badge" variant="coral">{picks[0].tag}</Badge>
+        </ImageCard>
+
+        <div class="grid gap-6 sm:grid-cols-2 lg:col-span-5 lg:grid-cols-1">
+          {picks.slice(1, 3).map((pick) => (
+            <ImageCard
+              href={pick.href}
+              image={pick.image}
+              imageAlt={pick.alt}
+              title={pick.title}
+              meta={pick.meta}
+              aspect="wide"
+            >
+              <Badge slot="badge" variant="sand">{pick.tag}</Badge>
+            </ImageCard>
+          ))}
+        </div>
+      </div>
+
+      <div class="mt-6">
+        <ImageCard
+          href={picks[3].href}
+          image={picks[3].image}
+          imageAlt={picks[3].alt}
+          title={picks[3].title}
+          meta={picks[3].meta}
+          aspect="wide"
+        >
+          <Badge slot="badge" variant="palm">{picks[3].tag}</Badge>
+        </ImageCard>
+      </div>
+
+      <div class="mt-10">
+        <Button href="/destinations" variant="ghost">See every destination</Button>
+      </div>
+    </Container>
+  </section>
+
+  <!-- Why families use Nestward -->
+  <section class="section bg-sand">
+    <Container size="wide">
+      <SectionTitle
+        kicker="Why Nestward"
+        heading="Planning a family trip shouldn’t feel like a second job"
+        supporting="We built the site we wished existed the last time we tried to plan a holiday around nap times and school terms."
+      />
+
+      <div class="mt-12 grid gap-6 md:grid-cols-3">
+        {values.map((value) => (
+          <Card padding="spacious">
+            <h3 class="text-2xl text-ink">{value.title}</h3>
+            <p class="mt-3 text-[0.98rem] leading-relaxed text-ink-soft">{value.body}</p>
+          </Card>
+        ))}
+      </div>
+    </Container>
+  </section>
+
+  <!-- Journal teaser -->
+  <section class="section">
+    <Container size="wide">
+      <div class="grid items-center gap-10 lg:grid-cols-2">
+        <div class="relative overflow-hidden rounded-[1.75rem] shadow-[var(--shadow-lifted)]">
+          <Image
+            src={journalBanner}
+            alt="Abstract illustration of a warm dawn sky over gentle hills"
+            widths={[480, 768, 1000]}
+            sizes="(min-width: 1024px) 45vw, 90vw"
+            class="aspect-[4/3] w-full object-cover"
+          />
+        </div>
+        <div>
+          <p class="kicker">From the journal</p>
+          <h2 class="mt-4 text-4xl text-ink sm:text-5xl">
+            Longer reads for the planning rabbit-hole hours
+          </h2>
+          <p class="mt-5 max-w-lg text-lg text-ink-soft">
+            Packing lists that account for meltdowns, honest reviews of
+            family resorts we’d actually return to, and season-by-season
+            advice for travelling with kids of every age.
+          </p>
+          <div class="mt-8">
+            <Button href="/journal" variant="secondary">Read the journal</Button>
+          </div>
+        </div>
+      </div>
+    </Container>
+  </section>
+
+  <!-- Closing CTA band -->
+  <section class="section bg-lagoon-deep">
+    <Container size="content">
+      <SectionTitle
+        align="center"
+        tone="dark"
+        kicker="Ready when you are"
+        heading="Tell us about your family, and we’ll do the narrowing down"
+        supporting="A short set of questions on ages, budget, and trip style — matched against destinations our editors already trust."
+      />
+      <div class="mt-9 flex justify-center">
+        <Button href="/plan" variant="on-dark">Start planning your trip</Button>
+      </div>
+    </Container>
+  </section>
+</BaseLayout>

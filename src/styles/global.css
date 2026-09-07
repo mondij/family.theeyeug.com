@@ -1,0 +1,297 @@
+/*
+  Nestward design system
+  -----------------------
+  A warm, editorial visual language for family travel:
+  ocean blues + tropical greens (trust, adventure) and
+  sunset coral + sand (warmth, family).
+
+  Tailwind v4 tokens are declared with @theme so every
+  color/type/spacing choice below is available as a
+  utility class (bg-lagoon, font-display, text-lg, etc).
+*/
+
+@import 'tailwindcss';
+@plugin '@tailwindcss/typography';
+
+@theme {
+  /* ---------- Color: named, not generic slate/gray ---------- */
+  --color-ink: #10222b;          /* near-black text, warm navy-ink */
+  --color-ink-soft: #2c3e46;     /* secondary text on light backgrounds */
+
+  --color-lagoon: #0e6b72;       /* primary brand — ocean blue / tropical teal */
+  --color-lagoon-deep: #0a4c52;  /* pressed / dark sections */
+  --color-lagoon-light: #d7ebe9; /* tints, hover backgrounds */
+
+  --color-palm: #3c7a5d;         /* secondary — tropical green */
+  --color-palm-deep: #285940;
+
+  --color-coral: #e8794e;        /* primary CTA — sunset orange */
+  --color-coral-deep: #c85f38;
+  --color-coral-light: #fbe3d6;
+
+  --color-gold: #c9973f;         /* ratings, badges — sunset gold */
+
+  --color-sand: #f1e6d2;         /* warm neutral background */
+  --color-sand-deep: #e4d3b3;
+  --color-linen: #fbf7f0;        /* lightest surface / card background */
+  --color-white: #ffffff;
+
+  /* ---------- Type ---------- */
+  --font-display: 'Fraunces', 'Iowan Old Style', ui-serif, Georgia, serif;
+  --font-body: 'Work Sans', ui-sans-serif, system-ui, sans-serif;
+
+  /* ---------- Layout ---------- */
+  --container-narrow: 42rem;   /* long-form reading */
+  --container-content: 72rem;  /* default section width */
+  --container-wide: 88rem;     /* wide magazine grids */
+
+  /* ---------- Motion ---------- */
+  --ease-editorial: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* ---------- Shadow (warm-tinted, never flat grey) ---------- */
+  --shadow-card: 0 1px 2px rgba(16, 34, 43, 0.06), 0 12px 28px -12px rgba(16, 34, 43, 0.18);
+  --shadow-card-hover: 0 4px 10px rgba(16, 34, 43, 0.08), 0 24px 40px -16px rgba(16, 34, 43, 0.24);
+  --shadow-lifted: 0 30px 60px -20px rgba(10, 76, 82, 0.35);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-sand-deep);
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  body {
+    background-color: var(--color-linen);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    font-feature-settings: 'ss01' 1;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    color: var(--color-ink);
+    line-height: 1.08;
+    letter-spacing: -0.01em;
+    font-weight: 600;
+  }
+
+  p {
+    max-width: 68ch;
+  }
+
+  a {
+    color: inherit;
+  }
+
+  ::selection {
+    background-color: var(--color-coral);
+    color: var(--color-linen);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-coral);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+}
+
+@layer components {
+  /* ---------- Containers ---------- */
+  .container-narrow {
+    max-width: var(--container-narrow);
+    margin-inline: auto;
+    padding-inline: 1.5rem;
+  }
+
+  .container-content {
+    max-width: var(--container-content);
+    margin-inline: auto;
+    padding-inline: 1.5rem;
+  }
+
+  .container-wide {
+    max-width: var(--container-wide);
+    margin-inline: auto;
+    padding-inline: 1.5rem;
+  }
+
+  @media (min-width: 640px) {
+    .container-narrow, .container-content, .container-wide {
+      padding-inline: 2rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .container-content, .container-wide {
+      padding-inline: 3rem;
+    }
+  }
+
+  /* ---------- Section rhythm ---------- */
+  .section {
+    padding-block: clamp(3.5rem, 6vw, 7rem);
+  }
+
+  /* ---------- Buttons ---------- */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: 999px;
+    padding: 0.75rem 1.5rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: transform 0.35s var(--ease-editorial), background-color 0.25s ease, box-shadow 0.25s ease, color 0.25s ease;
+  }
+
+  .btn:active {
+    transform: scale(0.97);
+  }
+
+  .btn-primary {
+    background-color: var(--color-coral);
+    color: var(--color-linen);
+    box-shadow: 0 10px 24px -10px rgba(200, 95, 56, 0.55);
+  }
+
+  .btn-primary:hover {
+    background-color: var(--color-coral-deep);
+  }
+
+  .btn-secondary {
+    background-color: transparent;
+    color: var(--color-ink);
+    border: 1.5px solid var(--color-ink);
+  }
+
+  .btn-secondary:hover {
+    background-color: var(--color-ink);
+    color: var(--color-linen);
+  }
+
+  .btn-on-dark {
+    background-color: rgba(251, 247, 240, 0.12);
+    color: var(--color-linen);
+    border: 1.5px solid rgba(251, 247, 240, 0.5);
+    backdrop-filter: blur(6px);
+  }
+
+  .btn-on-dark:hover {
+    background-color: var(--color-linen);
+    color: var(--color-ink);
+  }
+
+  .btn-ghost {
+    padding-inline: 0;
+    color: var(--color-lagoon-deep);
+    border-radius: 0;
+    position: relative;
+  }
+
+  .btn-ghost::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -2px;
+    height: 1.5px;
+    background-color: currentColor;
+    transform: scaleX(0.35);
+    transform-origin: left;
+    transition: transform 0.35s var(--ease-editorial);
+  }
+
+  .btn-ghost:hover::after {
+    transform: scaleX(1);
+  }
+
+  /* ---------- Cards ---------- */
+  .card {
+    background-color: var(--color-white);
+    border-radius: 1.25rem;
+    border: 1px solid var(--color-sand-deep);
+    box-shadow: var(--shadow-card);
+    transition: box-shadow 0.4s var(--ease-editorial), transform 0.4s var(--ease-editorial);
+  }
+
+  .card-hover:hover {
+    box-shadow: var(--shadow-card-hover);
+    transform: translateY(-4px);
+  }
+
+  /* ---------- Badges ---------- */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    border-radius: 999px;
+    padding: 0.3rem 0.75rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    line-height: 1;
+  }
+
+  .badge-sand {
+    background-color: var(--color-sand);
+    color: var(--color-ink-soft);
+  }
+
+  .badge-coral {
+    background-color: var(--color-coral-light);
+    color: var(--color-coral-deep);
+  }
+
+  .badge-palm {
+    background-color: #e2ede4;
+    color: var(--color-palm-deep);
+  }
+
+  .badge-on-dark {
+    background-color: rgba(251, 247, 240, 0.16);
+    color: var(--color-linen);
+    backdrop-filter: blur(4px);
+  }
+
+  /* ---------- Editorial kicker (sentence case, never tracked-out caps) ---------- */
+  .kicker {
+    font-family: var(--font-body);
+    font-weight: 600;
+    color: var(--color-coral-deep);
+    font-size: 1rem;
+  }
+
+  /* ---------- Prose (journal articles) ---------- */
+  .prose-editorial {
+    max-width: 68ch;
+    font-size: 1.125rem;
+    line-height: 1.75;
+    color: var(--color-ink-soft);
+  }
+
+  .prose-editorial h2 {
+    font-size: 1.75rem;
+    margin-top: 2.5em;
+    margin-bottom: 0.6em;
+  }
+
+  .prose-editorial p {
+    margin-bottom: 1.4em;
+  }
+}

@@ -1,0 +1,80 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+/**
+ * ImageCard
+ * The primary discovery card across the site — destinations, journal
+ * entries, activities. Image-led with a bottom scrim so a title always
+ * reads clearly regardless of the photo underneath, plus an optional
+ * top-left badge slot for a trip style or tag.
+ *
+ * `aspect` controls the crop so the same component can anchor a large
+ * featured tile or a smaller grid tile without layout shift.
+ */
+interface Props {
+  href: string;
+  image: ImageMetadata;
+  imageAlt: string;
+  title: string;
+  meta?: string;
+  aspect?: 'portrait' | 'square' | 'wide';
+  priority?: boolean;
+  class?: string;
+}
+
+const {
+  href,
+  image,
+  imageAlt,
+  title,
+  meta,
+  aspect = 'portrait',
+  priority = false,
+  class: className,
+} = Astro.props;
+
+const aspectClass = {
+  portrait: 'aspect-[4/5]',
+  square: 'aspect-square',
+  wide: 'aspect-[16/10]',
+}[aspect];
+---
+
+<a
+  href={href}
+  class:list={[
+    'card card-hover group relative flex flex-col overflow-hidden p-0',
+    className,
+  ]}
+>
+  <div class:list={['relative overflow-hidden', aspectClass]}>
+    <Image
+      src={image}
+      alt={imageAlt}
+      widths={[400, 640, 960, 1280]}
+      sizes="(min-width: 1024px) 400px, (min-width: 640px) 45vw, 90vw"
+      class="h-full w-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-[1.06]"
+      loading={priority ? 'eager' : 'lazy'}
+      fetchpriority={priority ? 'high' : 'auto'}
+    />
+    <div
+      class="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/10 to-transparent"
+    >
+    </div>
+    {Astro.slots.has('badge') && (
+      <div class="absolute left-4 top-4">
+        <slot name="badge" />
+      </div>
+    )}
+    <div class="absolute inset-x-0 bottom-0 p-5 sm:p-6">
+      <h3 class="text-xl text-linen sm:text-2xl">{title}</h3>
+      {meta && <p class="mt-1 text-sm text-sand/90">{meta}</p>}
+    </div>
+  </div>
+  {Astro.slots.has('default') && (
+    <div class="flex flex-1 flex-col gap-2 p-5 sm:p-6">
+      <slot />
+    </div>
+  )}
+</a>

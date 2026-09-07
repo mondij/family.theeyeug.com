@@ -1,0 +1,23 @@
+---
+/**
+ * Container
+ * A reusable width wrapper. Use `size` to switch between long-form
+ * reading, standard sections, and wide magazine grids.
+ */
+interface Props {
+  size?: 'narrow' | 'content' | 'wide';
+  class?: string;
+}
+
+const { size = 'content', class: className } = Astro.props;
+
+const sizeClass = {
+  narrow: 'container-narrow',
+  content: 'container-content',
+  wide: 'container-wide',
+}[size];
+---
+
+<div class:list={[sizeClass, className]}>
+  <slot />
+</div>

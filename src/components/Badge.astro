@@ -1,0 +1,24 @@
+---
+/**
+ * Badge
+ * Small pill label for tags, trip styles, and ratings.
+ * Sentence case by default — avoid forcing uppercase on real content.
+ */
+interface Props {
+  variant?: 'sand' | 'coral' | 'palm' | 'on-dark';
+  class?: string;
+}
+
+const { variant = 'sand', class: className } = Astro.props;
+
+const variantClass = {
+  sand: 'badge badge-sand',
+  coral: 'badge badge-coral',
+  palm: 'badge badge-palm',
+  'on-dark': 'badge badge-on-dark',
+}[variant];
+---
+
+<span class:list={[variantClass, className]}>
+  <slot />
+</span>

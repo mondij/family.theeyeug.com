@@ -1,0 +1,32 @@
+---
+/**
+ * Button
+ * Renders as an <a> when `href` is provided, otherwise a <button>.
+ * Variants map directly to the .btn-* classes in global.css.
+ */
+interface Props {
+  href?: string;
+  variant?: 'primary' | 'secondary' | 'ghost' | 'on-dark';
+  type?: 'button' | 'submit';
+  class?: string;
+}
+
+const { href, variant = 'primary', type = 'button', class: className } = Astro.props;
+
+const variantClass = {
+  primary: 'btn btn-primary',
+  secondary: 'btn btn-secondary',
+  ghost: 'btn-ghost',
+  'on-dark': 'btn btn-on-dark',
+}[variant];
+
+const Tag = href ? 'a' : 'button';
+---
+
+<Tag
+  href={href}
+  type={!href ? type : undefined}
+  class:list={[variantClass, className]}
+>
+  <slot />
+</Tag>
