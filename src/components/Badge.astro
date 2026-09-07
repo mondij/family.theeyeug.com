@@ -5,7 +5,7 @@
  * Sentence case by default — avoid forcing uppercase on real content.
  */
 interface Props {
-  variant?: 'sand' | 'coral' | 'palm' | 'on-dark';
+  variant?: 'sand' | 'coral' | 'palm' | 'green' | 'on-dark';
   class?: string;
 }
 
@@ -15,6 +15,7 @@ const variantClass = {
   sand: 'badge badge-sand',
   coral: 'badge badge-coral',
   palm: 'badge badge-palm',
+  green: 'badge badge-green',
   'on-dark': 'badge badge-on-dark',
 }[variant];
 ---

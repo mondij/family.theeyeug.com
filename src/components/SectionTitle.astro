@@ -25,17 +25,21 @@ const { kicker, heading, supporting, align = 'left', tone = 'light', class: clas
     className,
   ]}
 >
-  {kicker && <p class="kicker">{kicker}</p>}
+  {kicker && (
+    <p class:list={[tone === 'dark' ? 'font-bold text-sm text-green-light' : 'kicker']}>
+      {kicker}
+    </p>
+  )}
   <h2
     class:list={[
-      'text-4xl sm:text-5xl',
-      tone === 'dark' ? 'text-linen' : 'text-ink',
+      'text-3xl sm:text-4xl',
+      tone === 'dark' ? 'text-white' : 'text-ink',
     ]}
   >
     {heading}
   </h2>
   {supporting && (
-    <p class:list={['text-lg', tone === 'dark' ? 'text-sand' : 'text-ink-soft']}>
+    <p class:list={['text-lg', tone === 'dark' ? 'text-white/85' : 'text-ink-soft']}>
       {supporting}
     </p>
   )}
