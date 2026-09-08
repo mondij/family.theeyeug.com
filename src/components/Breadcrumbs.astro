@@ -1,0 +1,32 @@
+---
+import Container from './Container.astro';
+
+/**
+ * Breadcrumbs
+ * Visual trail for content pages (Home / Destinations / Florida).
+ * The layout using this component is responsible for also emitting
+ * breadcrumbSchema(items) as JSON-LD — this component is UI only.
+ */
+interface Props {
+  items: { name: string; href: string }[];
+}
+
+const { items } = Astro.props;
+---
+
+<nav aria-label="Breadcrumb" class="border-b border-border bg-bg-subtle py-3">
+  <Container size="wide">
+    <ol class="flex flex-wrap items-center gap-1.5 text-sm text-ink-soft">
+      {items.map((item, i) => (
+        <li class="flex items-center gap-1.5">
+          {i > 0 && <span aria-hidden="true" class="text-ink-faint">/</span>}
+          {i === items.length - 1 ? (
+            <span class="font-semibold text-ink" aria-current="page">{item.name}</span>
+          ) : (
+            <a href={item.href} class="hover:text-green-dark">{item.name}</a>
+          )}
+        </li>
+      ))}
+    </ol>
+  </Container>
+</nav>

@@ -1,0 +1,37 @@
+---
+import Button from './Button.astro';
+
+/**
+ * AffiliateBox
+ * The CTA box used for "where to book" / "where to buy" moments.
+ * Always carries a visible disclosure line — the trust-brand
+ * positioning this whole site is built on depends on never hiding
+ * that a link may be commercial.
+ */
+interface Props {
+  title: string;
+  description?: string;
+  ctas: { label: string; href: string; style?: 'primary' | 'secondary' }[];
+  disclosure?: string;
+}
+
+const {
+  title,
+  description,
+  ctas,
+  disclosure = 'We may earn a commission if you book through a link below — it never affects our recommendations.',
+} = Astro.props;
+---
+
+<div class="rounded-2xl border border-green-light bg-green-light/60 p-6 sm:p-8">
+  <h3 class="text-xl font-extrabold text-ink">{title}</h3>
+  {description && <p class="mt-2 max-w-2xl text-[0.95rem] text-ink-soft">{description}</p>}
+  <div class="mt-5 flex flex-wrap gap-3">
+    {ctas.map((cta) => (
+      <Button href={cta.href} variant={cta.style === 'secondary' ? 'secondary' : 'primary'}>
+        {cta.label}
+      </Button>
+    ))}
+  </div>
+  {disclosure && <p class="mt-4 text-xs text-ink-faint">{disclosure}</p>}
+</div>

@@ -1,0 +1,70 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+/**
+ * ContentSection
+ * Renders one entry from a content item's `sections` array. This is
+ * the piece that makes the schema scale to hundreds of pages without
+ * new fields per page type: "Why families love this destination",
+ * "Room options", "Nearby attractions" etc. are all the same shape
+ * (heading + optional prose / bullets / sub-items), so this one
+ * component renders all of them.
+ */
+interface Props {
+  heading: string;
+  body?: string[];
+  bullets?: string[];
+  items?: { title: string; body?: string; image?: ImageMetadata; imageAlt?: string }[];
+}
+
+const { heading, body, bullets, items } = Astro.props;
+---
+
+<section class="scroll-mt-24">
+  <h2 class="text-2xl font-extrabold text-ink sm:text-3xl">{heading}</h2>
+
+  {body && body.length > 0 && (
+    <div class="prose-editorial mt-4 max-w-none">
+      {body.map((paragraph) => (
+        <p class="mb-4 max-w-none text-[1.05rem] leading-relaxed text-ink-soft">{paragraph}</p>
+      ))}
+    </div>
+  )}
+
+  {bullets && bullets.length > 0 && (
+    <ul class="mt-4 flex flex-col gap-2.5">
+      {bullets.map((bullet) => (
+        <li class="flex items-start gap-3 text-[1.05rem] leading-relaxed text-ink-soft">
+          <span class="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-green"></span>
+          {bullet}
+        </li>
+      ))}
+    </ul>
+  )}
+
+  {items && items.length > 0 && (
+    <div class="mt-6 grid gap-5 sm:grid-cols-2">
+      {items.map((item) => (
+        <div class="card overflow-hidden p-0">
+          {item.image && (
+            <div class="aspect-[16/10] overflow-hidden">
+              <Image
+                src={item.image}
+                alt={item.imageAlt ?? item.title}
+                widths={[320, 480, 640]}
+                sizes="(min-width: 640px) 45vw, 90vw"
+                class="h-full w-full object-cover"
+                loading="lazy"
+              />
+            </div>
+          )}
+          <div class="p-5">
+            <h3 class="font-extrabold text-ink">{item.title}</h3>
+            {item.body && <p class="mt-1.5 text-sm leading-relaxed text-ink-soft">{item.body}</p>}
+          </div>
+        </div>
+      ))}
+    </div>
+  )}
+</section>

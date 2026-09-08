@@ -1,0 +1,19 @@
+---
+import { getCollection } from 'astro:content';
+import ResortLayout from '../../layouts/ResortLayout.astro';
+import { resolveRelated } from '../../lib/content';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('resorts');
+  return entries.map((entry) => ({
+    params: { slug: entry.data.slugOverride ?? entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const url = new URL(Astro.url.pathname, Astro.site).toString();
+const related = await resolveRelated(entry.data.relatedArticles);
+---
+
+<ResortLayout entry={entry} url={url} related={related} />

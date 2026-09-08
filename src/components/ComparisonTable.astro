@@ -1,0 +1,39 @@
+---
+/**
+ * ComparisonTable
+ * A simple, responsive comparison grid — room options, competing
+ * products, or resorts side by side. Scrolls horizontally on small
+ * screens rather than collapsing, so the comparison stays readable.
+ */
+interface Props {
+  columns: string[];
+  rows: { label: string; values: string[] }[];
+  caption?: string;
+}
+
+const { columns, rows, caption } = Astro.props;
+---
+
+<div class="card overflow-x-auto p-0">
+  <table class="w-full min-w-[520px] border-collapse text-sm">
+    {caption && <caption class="p-4 text-left text-sm text-ink-soft">{caption}</caption>}
+    <thead>
+      <tr class="border-b border-border bg-bg-subtle">
+        <th class="p-4 text-left font-bold text-ink"></th>
+        {columns.map((col) => (
+          <th class="p-4 text-left font-bold text-ink">{col}</th>
+        ))}
+      </tr>
+    </thead>
+    <tbody>
+      {rows.map((row, i) => (
+        <tr class:list={['border-b border-border last:border-b-0', i % 2 === 1 && 'bg-bg-subtle/50']}>
+          <th scope="row" class="p-4 text-left font-semibold text-ink-soft">{row.label}</th>
+          {row.values.map((value) => (
+            <td class="p-4 text-ink">{value}</td>
+          ))}
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>

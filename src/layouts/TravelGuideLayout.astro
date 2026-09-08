@@ -1,0 +1,104 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { render } from 'astro:content';
+import type { ImageMetadata } from 'astro';
+import BaseLayout from './BaseLayout.astro';
+import Container from '../components/Container.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import ArticleHero from '../components/ArticleHero.astro';
+import QuickFacts from '../components/QuickFacts.astro';
+import ContentSection from '../components/ContentSection.astro';
+import AffiliateBox from '../components/AffiliateBox.astro';
+import FAQSection from '../components/FAQSection.astro';
+import RelatedContent from '../components/RelatedContent.astro';
+import { articleSchema, faqSchema, breadcrumbSchema } from '../lib/schema';
+
+/**
+ * Travel Guide Layout
+ * The general-purpose long-form template — packing lists, "how to fly
+ * with toddlers", budget guides. Simpler than Destination/Resort (no
+ * pros/cons, no dedicated summary line) but built on the exact same
+ * primitives, so a guide can still carry quick facts, sections,
+ * an affiliate box, and FAQ when useful.
+ */
+interface Props {
+  entry: CollectionEntry<'articles'>;
+  url: string;
+  related: {
+    href: string;
+    image: ImageMetadata;
+    imageAlt: string;
+    category: string;
+    title: string;
+  }[];
+}
+
+const { entry, url, related } = Astro.props;
+const { data } = entry;
+const { Content } = await render(entry);
+
+const breadcrumbItems = [
+  { name: 'Home', href: '/' },
+  { name: 'Journal', href: '/articles' },
+  { name: data.title, href: url },
+];
+
+const article = articleSchema({
+  title: data.title,
+  description: data.description,
+  imageUrl: url,
+  url,
+  authorName: data.author.name,
+  publishDate: data.publishDate,
+  updatedDate: data.updatedDate,
+});
+const faq = faqSchema(data.faq);
+const breadcrumbsLd = breadcrumbSchema(breadcrumbItems.map((b) => ({ name: b.name, url: b.href })));
+---
+
+<BaseLayout title={data.title} description={data.description}>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(article)} />
+    {faq && <script type="application/ld+json" set:html={JSON.stringify(faq)} />}
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbsLd)} />
+  </Fragment>
+
+  <Breadcrumbs items={breadcrumbItems.map((b) => ({ name: b.name, href: b.href }))} />
+
+  <ArticleHero
+    image={data.featuredImage}
+    imageAlt={data.featuredImageAlt}
+    category={data.category}
+    title={data.title}
+    authorName={data.author.name}
+    publishDate={data.publishDate}
+    updatedDate={data.updatedDate}
+    readingMinutes={data.readingMinutes}
+  />
+
+  <Container size="narrow" class="section">
+    <div class="flex flex-col gap-12">
+      <div class="prose-editorial max-w-none text-lg leading-relaxed text-ink-soft">
+        <Content />
+      </div>
+
+      {data.quickFacts.length > 0 && <QuickFacts facts={data.quickFacts} />}
+
+      {data.sections.map((section) => (
+        <ContentSection
+          heading={section.heading}
+          body={section.body}
+          bullets={section.bullets}
+          items={section.items}
+        />
+      ))}
+
+      {data.ctas.length > 0 && (
+        <AffiliateBox title="Take this with you" ctas={data.ctas} />
+      )}
+
+      <FAQSection items={data.faq} />
+      <RelatedContent items={related} />
+    </div>
+  </Container>
+</BaseLayout>

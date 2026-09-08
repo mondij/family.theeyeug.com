@@ -1,0 +1,28 @@
+---
+/**
+ * QuickFacts
+ * A scannable label/value grid — the destination "quick summary box",
+ * a resort's at-a-glance details, or a product's spec sheet. Same
+ * component, different data, across all four content templates.
+ */
+interface Props {
+  title?: string;
+  facts: { label: string; value: string }[];
+}
+
+const { title = 'Quick facts', facts } = Astro.props;
+---
+
+{facts.length > 0 && (
+  <div class="card p-6 sm:p-7">
+    <h2 class="text-lg font-extrabold text-ink">{title}</h2>
+    <dl class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+      {facts.map((fact) => (
+        <div class="rounded-lg bg-bg-subtle px-4 py-3">
+          <dt class="text-xs font-semibold uppercase tracking-wide text-ink-faint">{fact.label}</dt>
+          <dd class="mt-1 text-base font-bold text-ink">{fact.value}</dd>
+        </div>
+      ))}
+    </dl>
+  </div>
+)}

@@ -1,17 +1,9 @@
 # Nestward
 
 A family-vacation planning site built with Astro, TypeScript, and
-Tailwind CSS. The homepage is now built out end-to-end; deeper pages
-(destination detail, resort detail, journal listing) are the next step.
-
-## Direction
-
-Bright, trust-driven travel-search foundations (green brand, white
-surfaces, clean cards) from an earlier pass, now expressed through a
-warmer, more premium homepage: a cinematic emotional hero, editorial
-destination cards, and a curated (not algorithmic-feeling) resort
-shortlist — built to read as a trusted travel brand, not an affiliate
-listings site. No prices, review-bait, or urgency copy on the homepage.
+Tailwind CSS. The homepage and the full content system (schemas,
+templates, structured data) are built out; deeper listing/index pages
+are the next step.
 
 ## Getting started
 
@@ -22,62 +14,134 @@ npm run build     # outputs to dist/
 npm run preview   # serve the production build locally
 ```
 
-## Homepage sections (`src/pages/index.astro`)
+## Content system (`src/content.config.ts`)
 
-1. **Hero** — cinematic full-bleed image, headline, supporting line, two CTAs.
-2. **Vacation Discovery** — six image-led category tiles (Beach, Theme
-   Parks, All-Inclusive, Adventure, City Breaks, National Parks).
-3. **Featured Destinations** — five editorial destination cards
-   (Florida, Caribbean, Italy, Mexico, Japan), photo + one-line "why here".
-4. **Family Resorts** — a short shortlist of resort cards: image,
-   name, location, a "best for" badge, one CTA. No price/review clutter.
-5. **Travel Inspiration** — one large featured article + two
-   supporting ones, magazine-style.
-6. **Family Travel Tips** — four short, concrete tips in a card grid.
-7. **Newsletter** — a single, calm email capture (the footer no
-   longer duplicates this — it previously had its own signup form,
-   which was removed once this section existed).
-8. **Footer** — link columns + legal links.
+Four collections — **articles**, **destinations**, **resorts**,
+**products** — share one base schema so the same components and
+layouts work across all of them, and across however many hundred
+pages get added later:
+
+```
+title, description, category, featuredImage, featuredImageAlt,
+author { name, role? }, publishDate, updatedDate?, seoKeywords[],
+sections[], faq[], relatedArticles[], quickFacts[], prosCons?,
+ctas[], featured, slugOverride?
+```
+
+Each collection adds only what's genuinely specific to it:
+`destinations` (country, region, budgetTier, bestFor, tripStyle),
+`resorts` (location, bestForSummary, rating), `products` (price,
+rating, buyLinks).
+
+**The key scalability decision is `sections`.** Rather than a
+separate schema field for every named block a template needs ("Best
+areas to stay", "Kids facilities", "Nearby attractions"...), every
+structural block is the same shape — a heading plus prose, a bullet
+list, and/or structured sub-items with their own image:
+
+```yaml
+sections:
+  - heading: "Best areas to stay"
+    items:
+      - title: "Orlando"
+        body: "..."
+        image: "../../assets/images/destination-city.jpg"
+```
+
+`ContentSection.astro` renders whatever mix of body/bullets/items an
+entry provides, in the order the content author wrote them. New
+destinations, resorts, guides, or products need new **content**, not
+new schema or component code.
+
+`relatedArticles` and `slugOverride`:
+- `relatedArticles` is an array of `"collection/id"` strings (e.g.
+  `"resorts/coral-lagoon-resort-spa"`) rather than a typed
+  `reference()`, since related content can point at any of the four
+  collections, not just one. `src/lib/content.ts` (`resolveRelated`)
+  resolves these at build time and skips anything that doesn't
+  resolve, so a typo'd slug never breaks the build.
+- `slugOverride` lets a content file set a custom URL slug instead of
+  using the filename. It's named `slugOverride` rather than `slug`
+  specifically to avoid colliding with `entry.slug`, a legacy
+  property name Astro's content layer still reserves internally.
+
+## Templates (`src/layouts/`)
+
+- **DestinationLayout** — hero, intro, quick summary box, sections
+  (why families love it / best areas / things kids can do / travel
+  tips), affiliate CTA, FAQ, related content. Quick facts sit in a
+  sticky sidebar.
+- **ResortLayout** — hero, "best for" line, sections (room options /
+  kids facilities / activities / nearby attractions), pros & cons,
+  booking CTA, FAQ, related content.
+- **TravelGuideLayout** — simpler single-column template for the
+  `articles` collection: intro, optional quick facts, sections, an
+  optional CTA box, FAQ, related content.
+- **ProductReviewLayout** — hero, intro, sections, pros & cons, an
+  optional comparison table (passed in by the page route, since it's
+  the one structure genuinely specific to product reviews), buy-link
+  CTAs, FAQ, related content.
+
+All four share the same structured-data and breadcrumb wiring — see
+below — and all four are driven by the matching dynamic route:
+`src/pages/{articles,destinations,resorts,products}/[...slug].astro`.
+Each uses `getStaticPaths()` over its collection, so adding a new
+`.md` file is enough to generate a new page; no route code changes.
 
 ## Components (`src/components/`)
 
 New in this pass:
 
-- **Hero** — `image`, `imageAlt`, `headline`, `supporting`,
-  `primaryCta`/`secondaryCta` (`{ label, href }`). No search fields —
-  this is a brand moment, not a booking widget.
-- **TravelCategoryCard** — `href`, `image`, `imageAlt`, `label`. Deliberately minimal.
-- **DestinationCard** — `href`, `image`, `imageAlt`, `name`, `teaser`.
-  Full-bleed photo with a text scrim, editorial tone.
-- **ResortCard** — `href`, `image`, `imageAlt`, `name`, `location`,
-  `bestFor`, `ctaLabel?`. Panel layout, one CTA, no price/rating.
-- **ArticleCard** — `href`, `image`, `imageAlt`, `category`, `title`,
-  `excerpt`, `meta?`, `featured?`. Magazine kicker + headline + excerpt.
-- **Newsletter** — `heading?`, `supporting?`. Calm copy, explicit
-  no-spam line, no discount bait.
+- **ArticleHero** — the content-page hero (category badge, title,
+  byline with date/reading time) — distinct from the homepage's
+  marketing `Hero`.
+- **QuickFacts** — label/value grid, reused for a destination's quick
+  summary box, a resort's at-a-glance panel, and a product's spec sheet.
+- **ProsCons** — balanced two-column pros/cons list.
+- **ComparisonTable** — responsive comparison grid (rooms, products, etc).
+- **FAQSection** — native `<details>` accordion, zero JS.
+- **AffiliateBox** — the CTA box for booking/buy-link moments. Always
+  renders a visible disclosure line by default.
+- **RelatedContent** — grid of related items, fed by `resolveRelated()`.
+- **Breadcrumbs** — visual trail; pairs with `breadcrumbSchema()` for
+  structured data (the layout emits both from the same data).
+- **ContentSection** — internal helper (not in the original ask, but
+  needed to avoid duplicating the same rendering logic four times)
+  that renders one entry from `sections[]`.
 
-Carried over from the previous pass and still used elsewhere in the
-system (not on the homepage currently): **ImageCard** and
-**RatingBubbles** — kept for a future search/listing page where
-rating + price + review count are appropriate. **Container**,
-**Button**, **Badge**, **Card**, **SectionTitle**, **Header**,
-**Footer** are unchanged in API, with Footer's old inline newsletter
-form removed (see above).
+## Structured data (`src/lib/schema.ts`)
 
-## Images
+Three pure functions, each returning a plain object ready for
+`JSON.stringify()` into a `<script type="application/ld+json">` tag:
 
-`src/assets/images/` now includes, in addition to the earlier set:
-`hero-family.jpg`, six `cat-*.jpg` category tiles, five `dest-*.jpg`
-destination illustrations (Florida/Caribbean/Italy/Mexico/Japan),
-`resort-lagoon.jpg`, and two `article-*.jpg` banners. All are original
-abstract/illustrative placeholders (not photography) generated for
-this foundation — swap them for real photography via `astro:assets`
-whenever that's ready; every image already flows through `<Image />`
-for responsive `srcset`/WebP, so no component code needs to change.
+- `articleSchema(...)` — schema.org `Article`
+- `faqSchema(faq)` — schema.org `FAQPage` (returns `null` if there's
+  no FAQ, so an empty array never emits a broken/empty schema block)
+- `breadcrumbSchema(items)` — schema.org `BreadcrumbList`
+
+All three are wired into all four layouts via `BaseLayout`'s
+`slot="head"`, using each entry's real data — no per-page manual work.
+
+## Sample content
+
+One real entry per collection, fully cross-linked, to prove the
+whole pipeline end-to-end:
+
+- `src/content/destinations/florida.md`
+- `src/content/resorts/coral-lagoon-resort-spa.md`
+- `src/content/articles/20-minute-packing-list.md`
+- `src/content/products/wayfinder-40l-backpack.md`
+
+These reference each other via `relatedArticles` and render correctly
+through their respective layouts, including the sticky sidebar, FAQ
+accordion, pros/cons, and buy-link CTAs.
 
 ## What's deliberately not built yet
 
-- Destination/resort/journal detail page templates and listing pages
-- Real search/filter functionality
-- Real photography and copy
-- Newsletter form submission handling (currently a static form)
+- Listing/index pages (`/destinations`, `/resorts`, `/articles`,
+  `/products`) — the homepage and content pages link to these paths,
+  but only detail pages exist so far
+- Real photography and copy (all images remain original illustrated
+  placeholders, as in earlier passes)
+- Search/filter functionality
+- Newsletter and quote-request form submission handling

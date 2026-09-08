@@ -1,0 +1,60 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import Container from './Container.astro';
+import Badge from './Badge.astro';
+
+/**
+ * ArticleHero
+ * The header for a content page (destination/resort/article/product).
+ * Smaller and more informational than the homepage Hero — category
+ * badge, title, byline with date and reading time, on a photo.
+ */
+interface Props {
+  image: ImageMetadata;
+  imageAlt: string;
+  category: string;
+  title: string;
+  authorName: string;
+  publishDate: Date;
+  updatedDate?: Date;
+  readingMinutes?: number;
+}
+
+const {
+  image,
+  imageAlt,
+  category,
+  title,
+  authorName,
+  publishDate,
+  updatedDate,
+  readingMinutes,
+} = Astro.props;
+
+const dateFormatter = new Intl.DateTimeFormat('en-US', { dateStyle: 'long' });
+---
+
+<section class="relative h-[380px] overflow-hidden sm:h-[440px]">
+  <Image
+    src={image}
+    alt={imageAlt}
+    widths={[768, 1280, 1920, 2400]}
+    sizes="100vw"
+    class="absolute inset-0 h-full w-full object-cover"
+    priority
+  />
+  <div class="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/35 to-ink/10"></div>
+
+  <Container size="wide" class="relative z-10 flex h-full flex-col justify-end pb-8 sm:pb-10">
+    <Badge variant="green" class="mb-4 w-fit">{category}</Badge>
+    <h1 class="max-w-3xl text-3xl font-extrabold leading-tight text-white drop-shadow-sm sm:text-4xl lg:text-5xl">
+      {title}
+    </h1>
+    <p class="mt-4 text-sm text-white/85">
+      By {authorName} &middot; {dateFormatter.format(publishDate)}
+      {updatedDate && ` · Updated ${dateFormatter.format(updatedDate)}`}
+      {typeof readingMinutes === 'number' && ` · ${readingMinutes} min read`}
+    </p>
+  </Container>
+</section>

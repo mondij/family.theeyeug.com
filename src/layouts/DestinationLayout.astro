@@ -1,0 +1,121 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { render } from 'astro:content';
+import type { ImageMetadata } from 'astro';
+import BaseLayout from './BaseLayout.astro';
+import Container from '../components/Container.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import ArticleHero from '../components/ArticleHero.astro';
+import QuickFacts from '../components/QuickFacts.astro';
+import ContentSection from '../components/ContentSection.astro';
+import AffiliateBox from '../components/AffiliateBox.astro';
+import FAQSection from '../components/FAQSection.astro';
+import RelatedContent from '../components/RelatedContent.astro';
+import { articleSchema, faqSchema, breadcrumbSchema } from '../lib/schema';
+
+/**
+ * Destination Article Layout
+ * Hero -> introduction -> quick summary box -> why families love it ->
+ * best areas to stay -> things kids can do -> best accommodations ->
+ * travel tips -> FAQ -> related articles -> affiliate CTAs.
+ * The middle sections are entirely data-driven (entry.data.sections),
+ * so new destinations need only new content, never new code.
+ */
+interface Props {
+  entry: CollectionEntry<'destinations'>;
+  url: string;
+  related: {
+    href: string;
+    image: ImageMetadata;
+    imageAlt: string;
+    category: string;
+    title: string;
+  }[];
+}
+
+const { entry, url, related } = Astro.props;
+const { data } = entry;
+const { Content } = await render(entry);
+
+const breadcrumbItems = [
+  { name: 'Home', href: '/' },
+  { name: 'Destinations', href: '/destinations' },
+  { name: data.title, href: url },
+];
+
+const article = articleSchema({
+  title: data.title,
+  description: data.description,
+  imageUrl: url,
+  url,
+  authorName: data.author.name,
+  publishDate: data.publishDate,
+  updatedDate: data.updatedDate,
+});
+const faq = faqSchema(data.faq);
+const breadcrumbsLd = breadcrumbSchema(breadcrumbItems.map((b) => ({ name: b.name, url: b.href })));
+
+const quickFactsList = [
+  { label: 'Country', value: data.country },
+  ...(data.region ? [{ label: 'Region', value: data.region }] : []),
+  { label: 'Budget', value: data.budgetTier },
+  { label: 'Best for', value: data.bestFor.join(', ') || 'All ages' },
+  ...data.quickFacts,
+];
+---
+
+<BaseLayout title={data.title} description={data.description}>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(article)} />
+    {faq && <script type="application/ld+json" set:html={JSON.stringify(faq)} />}
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbsLd)} />
+  </Fragment>
+
+  <Breadcrumbs items={breadcrumbItems.map((b) => ({ name: b.name, href: b.href }))} />
+
+  <ArticleHero
+    image={data.featuredImage}
+    imageAlt={data.featuredImageAlt}
+    category={data.category}
+    title={data.title}
+    authorName={data.author.name}
+    publishDate={data.publishDate}
+    updatedDate={data.updatedDate}
+  />
+
+  <Container size="content" class="section">
+    <div class="grid gap-12 lg:grid-cols-[1fr_320px]">
+      <div class="flex flex-col gap-12">
+        <div class="prose-editorial max-w-none text-lg leading-relaxed text-ink-soft">
+          <Content />
+        </div>
+
+        {data.ctas.length > 0 && (
+          <AffiliateBox
+            title={`Ready to plan your ${data.title} trip?`}
+            description="Compare family-friendly stays and start building your itinerary."
+            ctas={data.ctas}
+          />
+        )}
+
+        {data.sections.map((section) => (
+          <ContentSection
+            heading={section.heading}
+            body={section.body}
+            bullets={section.bullets}
+            items={section.items}
+          />
+        ))}
+
+        <FAQSection items={data.faq} />
+        <RelatedContent items={related} />
+      </div>
+
+      <aside class="lg:pt-2">
+        <div class="sticky top-24 flex flex-col gap-6">
+          <QuickFacts facts={quickFactsList} />
+        </div>
+      </aside>
+    </div>
+  </Container>
+</BaseLayout>
