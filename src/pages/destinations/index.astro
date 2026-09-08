@@ -1,0 +1,64 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Container from '../../components/Container.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import SectionTitle from '../../components/SectionTitle.astro';
+import DestinationCard from '../../components/DestinationCard.astro';
+import { breadcrumbSchema } from '../../lib/schema';
+
+/**
+ * Destinations index — every destination we've published, newest/
+ * featured first. Purely data-driven: adding a new .md file under
+ * src/content/destinations is enough to add a card here, no code
+ * change needed.
+ */
+const entries = await getCollection('destinations');
+
+const sorted = [...entries].sort((a, b) => {
+  if (a.data.featured !== b.data.featured) return a.data.featured ? -1 : 1;
+  return b.data.publishDate.valueOf() - a.data.publishDate.valueOf();
+});
+
+const breadcrumbItems = [
+  { name: 'Home', href: '/' },
+  { name: 'Destinations', href: '/destinations' },
+];
+const breadcrumbsLd = breadcrumbSchema(breadcrumbItems.map((b) => ({ name: b.name, url: b.href })));
+---
+
+<BaseLayout
+  title="Family Destinations"
+  description="Every destination we've researched for families — where to go, who it suits, and what actually matters when you're travelling with kids."
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbsLd)} />
+  </Fragment>
+
+  <Breadcrumbs items={breadcrumbItems} />
+
+  <Container size="wide" class="section">
+    <SectionTitle
+      kicker="Destinations"
+      heading="Every destination we've researched for families"
+      supporting="Chosen and written by editors who plan around nap times and school terms, not just flight deals."
+    />
+
+    {sorted.length > 0 ? (
+      <div class="mt-10 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">
+        {sorted.map((entry, i) => (
+          <DestinationCard
+            href={`/destinations/${entry.data.slugOverride ?? entry.id}`}
+            image={entry.data.featuredImage}
+            imageAlt={entry.data.featuredImageAlt}
+            name={entry.data.title}
+            teaser={entry.data.description}
+            priority={i === 0}
+          />
+        ))}
+      </div>
+    ) : (
+      <p class="mt-10 text-ink-soft">New destination guides are on the way — check back soon.</p>
+    )}
+  </Container>
+</BaseLayout>

@@ -138,10 +138,37 @@ accordion, pros/cons, and buy-link CTAs.
 
 ## What's deliberately not built yet
 
-- Listing/index pages (`/destinations`, `/resorts`, `/articles`,
-  `/products`) — the homepage and content pages link to these paths,
-  but only detail pages exist so far
 - Real photography and copy (all images remain original illustrated
   placeholders, as in earlier passes)
-- Search/filter functionality
+- Search/filter functionality on listing pages
+- Pagination (not needed yet at one entry per collection, but the
+  listing pages already sort by `featured` then `publishDate`, so
+  adding a `page` param later is additive, not a rewrite)
 - Newsletter and quote-request form submission handling
+- A `/trip-styles` section (linked from nav, not part of this content system)
+
+## Listing pages (`src/pages/{collection}/index.astro`)
+
+Each collection now has an index page alongside its `[...slug].astro`
+detail route:
+
+- **`/destinations`** — grid of `DestinationCard`s, editorial (no price/rating).
+- **`/resorts`** — grid of `ResortCard`s. Derives a short badge phrase
+  from `bestForSummary` (a full sentence) rather than adding a second
+  schema field just for the listing page.
+- **`/articles`** — one featured `ArticleCard` (magazine-style, full
+  width) plus a grid of the rest, newest/featured first.
+- **`/products`** — grid using `ImageCard` (built during an earlier
+  pass, otherwise unused) — its rating/price panel fits a gear-review
+  listing better than the more editorial cards used elsewhere.
+
+All four sort `featured` entries first, then by `publishDate`
+descending, and all are entirely data-driven — adding a new content
+file is enough to add a card, no page code changes needed. Each also
+emits its own `breadcrumbSchema()` for SEO.
+
+Two small fixes made alongside this: the header/footer "Journal" links
+now point at `/articles` (previously `/journal`, which never existed),
+and the homepage's Coral Lagoon resort card now links to the resort's
+real slug (`coral-lagoon-resort-spa`) instead of a shortened one that
+didn't match the actual content file.

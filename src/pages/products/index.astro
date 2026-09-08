@@ -1,0 +1,71 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Container from '../../components/Container.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import SectionTitle from '../../components/SectionTitle.astro';
+import ImageCard from '../../components/ImageCard.astro';
+import Badge from '../../components/Badge.astro';
+import { breadcrumbSchema } from '../../lib/schema';
+
+/**
+ * Products index reuses ImageCard (built during the TripAdvisor-style
+ * pass and unused since) rather than introducing a new card
+ * component — its rating/price panel is exactly what a gear review
+ * listing needs, and the homepage's more editorial cards deliberately
+ * don't show pricing.
+ */
+const entries = await getCollection('products');
+
+const sorted = [...entries].sort((a, b) => {
+  if (a.data.featured !== b.data.featured) return a.data.featured ? -1 : 1;
+  return b.data.publishDate.valueOf() - a.data.publishDate.valueOf();
+});
+
+const breadcrumbItems = [
+  { name: 'Home', href: '/' },
+  { name: 'Gear guides', href: '/products' },
+];
+const breadcrumbsLd = breadcrumbSchema(breadcrumbItems.map((b) => ({ name: b.name, url: b.href })));
+---
+
+<BaseLayout
+  title="Family Travel Gear Guides"
+  description="Honest reviews of the gear that actually earns a spot in the suitcase — tested on real family trips, bought at full price unless noted."
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbsLd)} />
+  </Fragment>
+
+  <Breadcrumbs items={breadcrumbItems} />
+
+  <Container size="wide" class="section">
+    <SectionTitle
+      kicker="Gear guides"
+      heading="Gear that actually earns a spot in the suitcase"
+      supporting="Tested on real family trips. We buy most of what we review ourselves — see our editorial standards for how we choose."
+    />
+
+    {sorted.length > 0 ? (
+      <div class="mt-10 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">
+        {sorted.map((entry, i) => (
+          <ImageCard
+            href={`/products/${entry.data.slugOverride ?? entry.id}`}
+            image={entry.data.featuredImage}
+            imageAlt={entry.data.featuredImageAlt}
+            title={entry.data.title}
+            rating={entry.data.rating}
+            price={entry.data.price}
+            priceUnit=""
+            aspect="square"
+            priority={i === 0}
+          >
+            <Badge variant="sand">{entry.data.category}</Badge>
+          </ImageCard>
+        ))}
+      </div>
+    ) : (
+      <p class="mt-10 text-ink-soft">New gear reviews are on the way — check back soon.</p>
+    )}
+  </Container>
+</BaseLayout>
