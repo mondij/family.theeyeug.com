@@ -6,7 +6,7 @@ import sitemap from '@astrojs/sitemap';
 // https://astro.build/config
 export default defineConfig({
   // TODO: replace with the production domain before launch.
-  site: 'https://family-theeyeug-com.ehmjack.workers.dev',
+  site: 'https://www.nestward.com',
   trailingSlash: 'never',
   integrations: [sitemap()],
   vite: {

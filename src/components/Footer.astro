@@ -1,6 +1,5 @@
 ---
 import Container from './Container.astro';
-import Button from './Button.astro';
 
 const currentYear = new Date().getFullYear();
 
@@ -43,20 +42,6 @@ const columns = [
         <p class="mt-4 text-[0.98rem] leading-relaxed text-sand/85">
           Thoughtful trip planning for families who want their next holiday to
           feel like an adventure worth telling stories about.
-        </p>
-        <form class="mt-6 flex max-w-sm gap-2">
-          <label for="footer-email" class="sr-only">Email address</label>
-          <input
-            id="footer-email"
-            type="email"
-            required
-            placeholder="Your email"
-            class="w-full rounded-full border border-sand/25 bg-transparent px-4 py-2.5 text-sm text-linen placeholder:text-sand/50 focus:border-green focus:outline-none"
-          />
-          <Button type="submit" variant="on-dark" class="shrink-0">Join</Button>
-        </form>
-        <p class="mt-2 text-xs text-sand/60">
-          One thoughtful email a month. No spam, ever.
         </p>
       </div>
 

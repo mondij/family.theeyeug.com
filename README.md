@@ -1,21 +1,17 @@
 # Nestward
 
 A family-vacation planning site built with Astro, TypeScript, and
-Tailwind CSS. This is a **foundation** — the design system,
-components, and content architecture are in place; destination and
-journal content is intentionally not written yet.
+Tailwind CSS. The homepage is now built out end-to-end; deeper pages
+(destination detail, resort detail, journal listing) are the next step.
 
 ## Direction
 
-The design leans into a bright, trust-driven travel-**search** look
-(rating bubbles, review counts, a search-first hero, dense listing
-grids) rather than a moody editorial-magazine look. White surfaces, a
-confident brand green, and scannable cards — prioritizing "can I
-trust this and book it quickly" over "beautiful photography essay."
-
-Warm coral/sand accents are kept as a minority color (family-friendly
-badges, a couple of illustrations) so the system still reads as its
-own brand rather than a straight reskin of a single competitor.
+Bright, trust-driven travel-search foundations (green brand, white
+surfaces, clean cards) from an earlier pass, now expressed through a
+warmer, more premium homepage: a cinematic emotional hero, editorial
+destination cards, and a curated (not algorithmic-feeling) resort
+shortlist — built to read as a trusted travel brand, not an affiliate
+listings site. No prices, review-bait, or urgency copy on the homepage.
 
 ## Getting started
 
@@ -26,67 +22,62 @@ npm run build     # outputs to dist/
 npm run preview   # serve the production build locally
 ```
 
-## Design system
+## Homepage sections (`src/pages/index.astro`)
 
-All tokens live in `src/styles/global.css` under `@theme`, so every
-value below is also a Tailwind utility (e.g. `bg-green`, `text-ink-soft`).
+1. **Hero** — cinematic full-bleed image, headline, supporting line, two CTAs.
+2. **Vacation Discovery** — six image-led category tiles (Beach, Theme
+   Parks, All-Inclusive, Adventure, City Breaks, National Parks).
+3. **Featured Destinations** — five editorial destination cards
+   (Florida, Caribbean, Italy, Mexico, Japan), photo + one-line "why here".
+4. **Family Resorts** — a short shortlist of resort cards: image,
+   name, location, a "best for" badge, one CTA. No price/review clutter.
+5. **Travel Inspiration** — one large featured article + two
+   supporting ones, magazine-style.
+6. **Family Travel Tips** — four short, concrete tips in a card grid.
+7. **Newsletter** — a single, calm email capture (the footer no
+   longer duplicates this — it previously had its own signup form,
+   which was removed once this section existed).
+8. **Footer** — link columns + legal links.
 
-### Color
+## Components (`src/components/`)
 
-| Token | Hex | Use |
-|---|---|---|
-| `ink` | `#1A1A1A` | Primary text |
-| `ink-soft` | `#5F6B68` | Secondary / meta text |
-| `green` | `#0AA06E` | Primary brand — CTAs, links, rating bubbles |
-| `green-dark` | `#086B4A` | Hover / pressed states |
-| `green-deeper` | `#0D3D2E` | Dark sections (utility bar, CTA band) |
-| `green-light` | `#E4F6EE` | Tints, hover chips |
-| `coral` | `#E8794E` | Minority warm accent — family-only badges |
-| `bg-subtle` | `#F4F6F5` | Alternating section background |
-| `border` | `#E3E7E5` | Card / input borders |
-| `linen` / `white` | `#FFFFFF` | Page background (no longer cream) |
+New in this pass:
 
-### Type
+- **Hero** — `image`, `imageAlt`, `headline`, `supporting`,
+  `primaryCta`/`secondaryCta` (`{ label, href }`). No search fields —
+  this is a brand moment, not a booking widget.
+- **TravelCategoryCard** — `href`, `image`, `imageAlt`, `label`. Deliberately minimal.
+- **DestinationCard** — `href`, `image`, `imageAlt`, `name`, `teaser`.
+  Full-bleed photo with a text scrim, editorial tone.
+- **ResortCard** — `href`, `image`, `imageAlt`, `name`, `location`,
+  `bestFor`, `ctaLabel?`. Panel layout, one CTA, no price/rating.
+- **ArticleCard** — `href`, `image`, `imageAlt`, `category`, `title`,
+  `excerpt`, `meta?`, `featured?`. Magazine kicker + headline + excerpt.
+- **Newsletter** — `heading?`, `supporting?`. Calm copy, explicit
+  no-spam line, no discount bait.
 
-Both display and body text use **Work Sans** (self-hosted via
-`@fontsource-variable`) — one clean, humanist sans rather than a
-serif/sans pairing, matching the more utilitarian search-site tone.
+Carried over from the previous pass and still used elsewhere in the
+system (not on the homepage currently): **ImageCard** and
+**RatingBubbles** — kept for a future search/listing page where
+rating + price + review count are appropriate. **Container**,
+**Button**, **Badge**, **Card**, **SectionTitle**, **Header**,
+**Footer** are unchanged in API, with Footer's old inline newsletter
+form removed (see above).
 
-### Layout
+## Images
 
-- Containers: `.container-narrow` / `.container-content` / `.container-wide`.
-- `.section` sets vertical rhythm.
-- Grids are uniform (`sm:grid-cols-2 lg:grid-cols-4`), not asymmetric
-  — cards are meant to be scanned and compared, not admired one at a time.
-
-### Components (`src/components/`)
-
-- **Container**, **Button**, **Badge**, **Card**, **SectionTitle** — as before.
-- **RatingBubbles** — the 5-circle rating pattern (with half-fills)
-  plus review count, used on every listing card.
-- **CategoryIcon** — small inline icon set (bed, ticket, fork, home,
-  ship, plane) for the homepage category strip.
-- **ImageCard** — photo on top, details in a white panel below
-  (title, location, rating, tags, price) rather than text overlaid on
-  the image — keeps trust signals visible regardless of the photo.
-- **Header** — white sticky bar: a dark utility strip (sign in / list
-  your property), logo + primary nav + CTA, and a separate horizontal-
-  scroll nav row for mobile (kept as its own element rather than a
-  wrapped flex row, which is what caused a layout bug in an earlier pass).
-- **Footer** — unchanged structurally; wordmark and link colors updated to match.
-
-## Content collections, images, and SEO
-
-Unchanged from the initial foundation — see `src/content.config.ts`
-for the `destinations` and `journal` schemas (no entries yet), and
-`src/assets/images/` for the placeholder illustrations (a new bright
-daytime hero — `hero-search.jpg` — was added for this direction).
-`astro.config.mjs` still has a placeholder `site` URL to update
-before launch.
+`src/assets/images/` now includes, in addition to the earlier set:
+`hero-family.jpg`, six `cat-*.jpg` category tiles, five `dest-*.jpg`
+destination illustrations (Florida/Caribbean/Italy/Mexico/Japan),
+`resort-lagoon.jpg`, and two `article-*.jpg` banners. All are original
+abstract/illustrative placeholders (not photography) generated for
+this foundation — swap them for real photography via `astro:assets`
+whenever that's ready; every image already flows through `<Image />`
+for responsive `srcset`/WebP, so no component code needs to change.
 
 ## What's deliberately not built yet
 
-- Destination/journal listing and detail page templates
-- Real search functionality behind the search bar (currently static)
+- Destination/resort/journal detail page templates and listing pages
+- Real search/filter functionality
 - Real photography and copy
-- Affiliate link handling/disclosure components
+- Newsletter form submission handling (currently a static form)

@@ -2,298 +2,257 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Container from '../components/Container.astro';
 import Button from '../components/Button.astro';
-import Badge from '../components/Badge.astro';
 import Card from '../components/Card.astro';
-import ImageCard from '../components/ImageCard.astro';
 import SectionTitle from '../components/SectionTitle.astro';
-import RatingBubbles from '../components/RatingBubbles.astro';
-import CategoryIcon from '../components/CategoryIcon.astro';
-import { Image } from 'astro:assets';
+import Hero from '../components/Hero.astro';
+import TravelCategoryCard from '../components/TravelCategoryCard.astro';
+import DestinationCard from '../components/DestinationCard.astro';
+import ResortCard from '../components/ResortCard.astro';
+import ArticleCard from '../components/ArticleCard.astro';
+import Newsletter from '../components/Newsletter.astro';
 
-import heroImage from '../assets/images/hero-search.jpg';
-import tropical from '../assets/images/destination-tropical.jpg';
-import mountain from '../assets/images/destination-mountain.jpg';
-import desert from '../assets/images/destination-desert.jpg';
-import city from '../assets/images/destination-city.jpg';
+import heroFamily from '../assets/images/hero-family.jpg';
+import catBeach from '../assets/images/cat-beach.jpg';
+import catThemeParks from '../assets/images/cat-theme-parks.jpg';
+import catAllInclusive from '../assets/images/cat-all-inclusive.jpg';
+import catAdventure from '../assets/images/cat-adventure.jpg';
+import catCityBreaks from '../assets/images/cat-city-breaks.jpg';
+import catNationalParks from '../assets/images/cat-national-parks.jpg';
+import destFlorida from '../assets/images/dest-florida.jpg';
+import destCaribbean from '../assets/images/dest-caribbean.jpg';
+import destItaly from '../assets/images/dest-italy.jpg';
+import destMexico from '../assets/images/dest-mexico.jpg';
+import destJapan from '../assets/images/dest-japan.jpg';
+import resortLagoon from '../assets/images/resort-lagoon.jpg';
+import destinationMountain from '../assets/images/destination-mountain.jpg';
+import destinationDesert from '../assets/images/destination-desert.jpg';
+import articlePacking from '../assets/images/article-packing.jpg';
+import articleBudget from '../assets/images/article-budget.jpg';
 import journalBanner from '../assets/images/journal-banner.jpg';
 
 const categories = [
-  { label: 'Hotels & resorts', icon: 'bed' },
-  { label: 'Things to do', icon: 'ticket' },
-  { label: 'Restaurants', icon: 'fork' },
-  { label: 'Vacation rentals', icon: 'home' },
-  { label: 'Cruises', icon: 'ship' },
-  { label: 'Flights', icon: 'plane' },
+  { label: 'Beach Vacations', image: catBeach, href: '/trip-styles/beach' },
+  { label: 'Theme Parks', image: catThemeParks, href: '/trip-styles/theme-parks' },
+  { label: 'All-Inclusive Resorts', image: catAllInclusive, href: '/trip-styles/all-inclusive' },
+  { label: 'Adventure Trips', image: catAdventure, href: '/trip-styles/adventure' },
+  { label: 'City Breaks', image: catCityBreaks, href: '/trip-styles/city-breaks' },
+  { label: 'National Parks', image: catNationalParks, href: '/trip-styles/national-parks' },
 ];
 
 const destinations = [
   {
-    image: tropical,
-    alt: 'Bright illustration of a tropical coastline with palm trees',
-    title: 'Coral Bay Family Resort',
-    location: 'Turks & Caicos',
-    rating: 4.5,
-    reviewCount: 2148,
-    price: '$189',
-    priceUnit: '/ night',
-    tag: 'Travellers\u2019 Choice',
-    tagVariant: 'green' as const,
-    href: '/destinations',
+    name: 'Florida',
+    image: destFlorida,
+    teaser: 'Endless beaches and theme parks, with some of the easiest flights from anywhere in North America.',
   },
   {
-    image: mountain,
-    alt: 'Bright illustration of layered alpine mountain ridges',
-    title: 'Alpine Meadow Lodge',
-    location: 'Interlaken, Switzerland',
-    rating: 5,
-    reviewCount: 964,
-    price: '$210',
-    priceUnit: '/ night',
-    tag: 'Great for tweens',
-    tagVariant: 'sand' as const,
-    href: '/destinations',
+    name: 'Caribbean',
+    image: destCaribbean,
+    teaser: 'Turquoise water and slow mornings, spread across a dozen islands built for easy family trips.',
   },
   {
-    image: desert,
-    alt: 'Bright illustration of warm desert dunes under a golden sky',
-    title: 'Dune Valley Ranch',
-    location: 'Scottsdale, Arizona',
-    rating: 4,
-    reviewCount: 731,
-    price: '$155',
-    priceUnit: '/ night',
-    tag: 'Multigenerational',
-    tagVariant: 'sand' as const,
-    href: '/destinations',
+    name: 'Italy',
+    image: destItaly,
+    teaser: 'Gelato, ruins, and villages small enough for little legs to explore on foot.',
   },
   {
-    image: city,
-    alt: 'Bright illustration of a city skyline at dusk',
-    title: 'Riverside Family Suites',
-    location: 'Lisbon, Portugal',
-    rating: 4.5,
-    reviewCount: 1389,
-    price: '$142',
-    priceUnit: '/ night',
-    tag: 'School-holiday ready',
-    tagVariant: 'sand' as const,
-    href: '/destinations',
+    name: 'Mexico',
+    image: destMexico,
+    teaser: 'All-inclusive resorts and warm water, a short flight from most major US and Canadian cities.',
+  },
+  {
+    name: 'Japan',
+    image: destJapan,
+    teaser: 'Bullet trains, gentle temples, and some of the most kid-delighted food on earth.',
   },
 ];
 
-const values = [
+const resorts = [
   {
-    title: 'Written for parents, not algorithms',
-    body: 'Every guide is shaped around nap schedules, fussy eaters, and what actually happens when you travel with kids.',
+    name: 'Coral Lagoon Resort & Spa',
+    location: 'Riviera Maya, Mexico',
+    bestFor: 'toddlers & preschoolers',
+    image: resortLagoon,
+    href: '/resorts/coral-lagoon',
   },
   {
-    title: 'Filtered by age and trip style',
-    body: 'Tell us who is coming and what kind of trip you want. We narrow thousands of options down to the ones worth your time.',
+    name: 'Alpine Meadow Family Lodge',
+    location: 'Interlaken, Switzerland',
+    bestFor: 'tweens & teens',
+    image: destinationMountain,
+    href: '/resorts/alpine-meadow',
   },
   {
-    title: 'Honest about cost, always',
-    body: 'Starting prices, typical extras, and what tends to catch families out — laid out plainly, before you click through to book.',
+    name: 'Dune Valley Ranch Resort',
+    location: 'Scottsdale, Arizona',
+    bestFor: 'multigenerational trips',
+    image: destinationDesert,
+    href: '/resorts/dune-valley',
+  },
+];
+
+const tips = [
+  {
+    title: 'Build in one lazy day',
+    body: 'Every trip needs at least one day with nothing booked — it\u2019s usually the one everyone remembers fondly.',
+  },
+  {
+    title: 'Let each kid pick one thing',
+    body: 'One activity, restaurant, or stop chosen entirely by them. It costs little and heads off a lot of complaining.',
+  },
+  {
+    title: 'Pack a small "new toy" for travel days',
+    body: 'Something they haven\u2019t seen before buys 45 minutes of quiet on a flight or long drive. Wrap it, even.',
+  },
+  {
+    title: 'Check entry requirements early',
+    body: 'Passport expiry dates, visa rules, and vaccination requirements are the easiest thing to leave too late.',
   },
 ];
 ---
 
 <BaseLayout
   title="Nestward — family trip planning, done properly"
-  description="Nestward helps parents plan family vacations with destination ratings, honest pricing, and reviews from real families."
+  description="Discover family-friendly destinations, resorts, and travel advice — with honest guides written for parents, not algorithms."
 >
-  <!-- Hero with search panel -->
-  <section class="relative">
-    <div class="relative h-[420px] overflow-hidden sm:h-[460px]">
-      <Image
-        src={heroImage}
-        alt="Bright illustration of a turquoise coastline"
-        widths={[768, 1280, 1920, 2400]}
-        sizes="100vw"
-        class="absolute inset-0 h-full w-full object-cover"
-        priority
-      />
-      <div class="absolute inset-0 bg-gradient-to-b from-ink/35 via-ink/10 to-ink/40"></div>
+  <Hero
+    image={heroFamily}
+    imageAlt="Golden hour illustration of a warm family beach at sunset"
+    headline="Create memories that last a lifetime"
+    supporting="Discover destinations, resorts, and travel ideas curated for families — so the planning feels as good as the trip."
+    primaryCta={{ label: 'Explore destinations', href: '/destinations' }}
+    secondaryCta={{ label: 'Find family resorts', href: '/resorts' }}
+  />
 
-      <Container size="wide" class="relative z-10 flex h-full flex-col justify-center">
-        <div class="max-w-2xl">
-          <h1 class="text-4xl font-extrabold text-white drop-shadow-sm sm:text-5xl">
-            Know better. Book better. Travel better — with kids.
-          </h1>
-          <p class="mt-3 max-w-xl text-lg text-white/95 drop-shadow-sm">
-            Real ratings, honest prices, and destination guides built around
-            families — from parents who’ve done the trip already.
-          </p>
-        </div>
-      </Container>
-    </div>
-
-    <Container size="wide" class="relative z-20 -mt-10 sm:-mt-12">
-      <div class="search-panel grid gap-2 sm:grid-cols-[2fr_1fr_1fr_auto]">
-        <label class="search-field cursor-pointer">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" class="shrink-0 text-ink-faint" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8"/>
-            <path d="M21 21l-4.3-4.3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-          </svg>
-          <span class="flex flex-col">
-            <span class="text-xs font-semibold text-ink-soft">Destination</span>
-            <input type="text" placeholder="Where to?" class="w-full border-0 bg-transparent p-0 text-sm text-ink placeholder:text-ink-faint focus:outline-none focus:ring-0" />
-          </span>
-        </label>
-
-        <label class="search-field cursor-pointer border-t border-border sm:border-t-0 sm:border-l">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" class="shrink-0 text-ink-faint" xmlns="http://www.w3.org/2000/svg">
-            <rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.8"/>
-            <path d="M3 9H21" stroke="currentColor" stroke-width="1.8"/>
-            <path d="M8 3V6M16 3V6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-          </svg>
-          <span class="flex flex-col">
-            <span class="text-xs font-semibold text-ink-soft">Dates</span>
-            <input type="text" placeholder="Add dates" class="w-full border-0 bg-transparent p-0 text-sm text-ink placeholder:text-ink-faint focus:outline-none focus:ring-0" />
-          </span>
-        </label>
-
-        <label class="search-field cursor-pointer border-t border-border sm:border-t-0 sm:border-l">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" class="shrink-0 text-ink-faint" xmlns="http://www.w3.org/2000/svg">
-            <path d="M17 20v-1.5a3.5 3.5 0 0 0-3.5-3.5h-3A3.5 3.5 0 0 0 7 18.5V20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-            <circle cx="12" cy="8" r="3.2" stroke="currentColor" stroke-width="1.8"/>
-          </svg>
-          <span class="flex flex-col">
-            <span class="text-xs font-semibold text-ink-soft">Travellers</span>
-            <input type="text" placeholder="2 adults, 2 kids" class="w-full border-0 bg-transparent p-0 text-sm text-ink placeholder:text-ink-faint focus:outline-none focus:ring-0" />
-          </span>
-        </label>
-
-        <div class="flex items-center p-1">
-          <Button variant="primary" class="w-full justify-center sm:w-auto">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/>
-              <path d="M21 21l-4.3-4.3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-            Search
-          </Button>
-        </div>
-      </div>
-    </Container>
-  </section>
-
-  <!-- Category strip -->
-  <section class="border-b border-border pb-8 pt-12 sm:pt-14">
-    <Container size="wide">
-      <div class="flex gap-6 overflow-x-auto sm:grid sm:grid-cols-3 sm:gap-4 lg:grid-cols-6">
-        {categories.map((cat) => (
-          <a
-            href="/destinations"
-            class="flex shrink-0 flex-col items-center gap-2.5 rounded-xl border border-border p-4 text-center transition-colors hover:border-green hover:bg-green-light"
-          >
-            <span class="flex h-11 w-11 items-center justify-center rounded-full bg-green-light text-green-dark">
-              <CategoryIcon name={cat.icon} />
-            </span>
-            <span class="text-sm font-semibold text-ink">{cat.label}</span>
-          </a>
-        ))}
-      </div>
-    </Container>
-  </section>
-
-  <!-- Top-rated destinations grid -->
+  <!-- Vacation Discovery -->
   <section class="section">
     <Container size="wide">
       <SectionTitle
-        kicker="Top rated by families"
-        heading="Family stays with real reviews behind them"
-        supporting="Ranked from ratings and reviews left by parents who travelled with kids the same age as yours."
+        kicker="Start here"
+        heading="What kind of trip are you dreaming of?"
+        supporting="Six ways families usually start planning — pick one to see destinations and resorts that fit."
       />
-
-      <div class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        {destinations.map((dest, i) => (
-          <ImageCard
-            href={dest.href}
-            image={dest.image}
-            imageAlt={dest.alt}
-            title={dest.title}
-            location={dest.location}
-            rating={dest.rating}
-            reviewCount={dest.reviewCount}
-            price={dest.price}
-            priceUnit={dest.priceUnit}
-            priority={i === 0}
-          >
-            <Badge slot="badge" variant={dest.tagVariant}>{dest.tag}</Badge>
-            <Badge variant="sand">Family-friendly</Badge>
-          </ImageCard>
+      <div class="mt-10 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-6">
+        {categories.map((cat, i) => (
+          <TravelCategoryCard
+            href={cat.href}
+            image={cat.image}
+            imageAlt={`Illustration representing ${cat.label}`}
+            label={cat.label}
+            priority={i < 3}
+          />
         ))}
-      </div>
-
-      <div class="mt-8 text-center">
-        <Button href="/destinations" variant="secondary">See all destinations</Button>
       </div>
     </Container>
   </section>
 
-  <!-- Why families use Nestward -->
+  <!-- Featured Destinations -->
   <section class="section bg-bg-subtle">
     <Container size="wide">
       <SectionTitle
-        kicker="Why Nestward"
-        heading="Planning a family trip shouldn’t feel like a second job"
-        supporting="We built the site we wished existed the last time we tried to plan a holiday around nap times and school terms."
+        kicker="Featured destinations"
+        heading="Five places families keep going back to"
+        supporting="Chosen for the mix of things that actually matter with kids: flight time, food options, and something for every age."
       />
+      <div class="mt-10 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-5">
+        {destinations.map((dest, i) => (
+          <DestinationCard
+            href={`/destinations/${dest.name.toLowerCase()}`}
+            image={dest.image}
+            imageAlt={`Illustration representing ${dest.name}`}
+            name={dest.name}
+            teaser={dest.teaser}
+            priority={i === 0}
+            class={i === 4 ? 'col-span-2 sm:col-span-1' : ''}
+          />
+        ))}
+      </div>
+    </Container>
+  </section>
 
-      <div class="mt-10 grid gap-5 md:grid-cols-3">
-        {values.map((value) => (
+  <!-- Family Resorts -->
+  <section class="section">
+    <Container size="wide">
+      <SectionTitle
+        kicker="Family resorts"
+        heading="A short, honest shortlist of resorts we’d actually book"
+        supporting="No sponsored placements — every resort here earned its spot from reviews and our own editors' research."
+      />
+      <div class="mt-10 grid gap-6 md:grid-cols-3">
+        {resorts.map((resort) => (
+          <ResortCard
+            href={resort.href}
+            image={resort.image}
+            imageAlt={`Illustration representing ${resort.name}`}
+            name={resort.name}
+            location={resort.location}
+            bestFor={resort.bestFor}
+          />
+        ))}
+      </div>
+    </Container>
+  </section>
+
+  <!-- Travel Inspiration -->
+  <section class="section bg-bg-subtle">
+    <Container size="wide">
+      <SectionTitle
+        kicker="Travel inspiration"
+        heading="Longer reads for the planning rabbit-hole hours"
+      />
+      <div class="mt-10 flex flex-col gap-12">
+        <ArticleCard
+          href="/journal/packing-list"
+          image={articlePacking}
+          imageAlt="Warm illustration of a coastline at dusk"
+          category="Packing"
+          title="The 20-minute packing list that actually works"
+          excerpt="A parent-tested system for packing a family of four without the 11pm meltdown over missing swimsuits."
+          meta="8 min read"
+          featured
+          priority
+        />
+        <div class="grid gap-8 sm:grid-cols-2">
+          <ArticleCard
+            href="/journal/flying-with-toddlers"
+            image={journalBanner}
+            imageAlt="Warm illustration of a dawn sky over gentle hills"
+            category="Flying with kids"
+            title="How to fly with toddlers and (mostly) enjoy it"
+            excerpt="What actually helps on a long-haul flight, from seat selection to snack timing."
+            meta="6 min read"
+          />
+          <ArticleCard
+            href="/journal/family-trips-on-a-budget"
+            image={articleBudget}
+            imageAlt="Warm illustration of rolling hills at sunset"
+            category="Budget travel"
+            title="Family trips that don't break the budget"
+            excerpt="Where the real savings are — and the corners that aren't worth cutting when you're travelling with kids."
+            meta="7 min read"
+          />
+        </div>
+      </div>
+    </Container>
+  </section>
+
+  <!-- Family Travel Tips -->
+  <section class="section">
+    <Container size="wide">
+      <SectionTitle
+        kicker="Quick tips"
+        heading="Small things that make a big difference"
+      />
+      <div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        {tips.map((tip) => (
           <Card padding="spacious">
-            <h3 class="text-xl text-ink">{value.title}</h3>
-            <p class="mt-2.5 text-[0.95rem] leading-relaxed text-ink-soft">{value.body}</p>
+            <h3 class="text-lg font-extrabold text-ink">{tip.title}</h3>
+            <p class="mt-2.5 text-[0.95rem] leading-relaxed text-ink-soft">{tip.body}</p>
           </Card>
         ))}
       </div>
     </Container>
   </section>
 
-  <!-- Journal teaser -->
-  <section class="section">
-    <Container size="wide">
-      <div class="grid items-center gap-10 lg:grid-cols-2">
-        <div class="relative overflow-hidden rounded-xl border border-border">
-          <Image
-            src={journalBanner}
-            alt="Warm illustration of a dawn sky over gentle hills"
-            widths={[480, 768, 1000]}
-            sizes="(min-width: 1024px) 45vw, 90vw"
-            class="aspect-[4/3] w-full object-cover"
-          />
-        </div>
-        <div>
-          <p class="kicker">From the journal</p>
-          <h2 class="mt-3 text-3xl text-ink sm:text-4xl">
-            Longer reads for the planning rabbit-hole hours
-          </h2>
-          <p class="mt-4 max-w-lg text-lg text-ink-soft">
-            Packing lists that account for meltdowns, honest reviews of
-            family resorts we’d actually return to, and season-by-season
-            advice for travelling with kids of every age.
-          </p>
-          <div class="mt-6">
-            <Button href="/journal" variant="secondary">Read the journal</Button>
-          </div>
-        </div>
-      </div>
-    </Container>
-  </section>
-
-  <!-- Closing CTA band -->
-  <section class="section bg-green-deeper">
-    <Container size="content">
-      <SectionTitle
-        align="center"
-        tone="dark"
-        kicker="Ready when you are"
-        heading="Tell us about your family, and we’ll do the narrowing down"
-        supporting="A short set of questions on ages, budget, and trip style — matched against destinations real families rate highly."
-      />
-      <div class="mt-8 flex justify-center">
-        <Button href="/plan" variant="primary">Start planning your trip</Button>
-      </div>
-    </Container>
-  </section>
+  <Newsletter />
 </BaseLayout>
