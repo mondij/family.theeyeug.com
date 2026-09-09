@@ -65,6 +65,10 @@ faq:
     answer: "If you have a child under 6 who naps, yes — being able to step straight into the pool during nap-adjacent hours changes the rhythm of the day noticeably."
 relatedArticles:
   - "destinations/florida"
+  - "destinations/best-family-vacations-in-mexico"
+  - "articles/best-caribbean-family-resorts"
+  - "articles/best-all-inclusive-family-resorts"
+  - "articles/best-resorts-with-kids-clubs"
 ctas:
   - label: "Check rates and availability"
     href: "#"

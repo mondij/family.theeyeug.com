@@ -16,4 +16,4 @@ const url = new URL(Astro.url.pathname, Astro.site).toString();
 const related = await resolveRelated(entry.data.relatedArticles);
 ---
 
-<ProductReviewLayout entry={entry} url={url} related={related} />
+<ProductReviewLayout entry={entry} url={url} related={related} comparisonTable={entry.data.comparisonTable} />

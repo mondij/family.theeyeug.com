@@ -62,6 +62,8 @@ faq:
 relatedArticles:
   - "resorts/coral-lagoon-resort-spa"
   - "articles/20-minute-packing-list"
+  - "articles/best-family-activities-in-orlando"
+  - "articles/best-theme-parks-around-the-world"
 ctas:
   - label: "Browse family resorts in Florida"
     href: "/resorts"

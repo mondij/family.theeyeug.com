@@ -37,6 +37,8 @@ faq:
 relatedArticles:
   - "destinations/florida"
   - "resorts/coral-lagoon-resort-spa"
+  - "articles/ultimate-family-vacation-packing-list"
+  - "articles/flying-with-kids-complete-guide"
 ---
 
 Packing for a family trip has a way of expanding to fill every available hour before departure, right up until it's 11pm and someone can't find a swimsuit. This is the system that's held up across enough trips to trust it — not exhaustive, just the parts that actually prevent the last-minute scramble.

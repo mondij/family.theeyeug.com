@@ -5,9 +5,26 @@ import Container from '../../components/Container.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import SectionTitle from '../../components/SectionTitle.astro';
 import ResortCard from '../../components/ResortCard.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
 import { breadcrumbSchema } from '../../lib/schema';
 
 const entries = await getCollection('resorts');
+
+// Roundup-style "Best X Resorts" pieces live in the articles collection
+// (they compare many properties, which fits the guide template better
+// than the single-property ResortLayout) — surfaced here so this page
+// isn't a dead end while only one dedicated resort review exists.
+const resortRoundupCategories = [
+  'All-Inclusive Resorts',
+  'Caribbean Resorts',
+  'Beach Resorts',
+  'Luxury Resorts',
+  'Kids Clubs',
+];
+const allArticles = await getCollection('articles');
+const roundups = allArticles
+  .filter((entry) => resortRoundupCategories.includes(entry.data.category))
+  .sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf());
 
 const sorted = [...entries].sort((a, b) => {
   if (a.data.featured !== b.data.featured) return a.data.featured ? -1 : 1;
@@ -65,6 +82,29 @@ const breadcrumbsLd = breadcrumbSchema(breadcrumbItems.map((b) => ({ name: b.nam
       </div>
     ) : (
       <p class="mt-10 text-ink-soft">New resort reviews are on the way — check back soon.</p>
+    )}
+
+    {roundups.length > 0 && (
+      <div class="mt-16 border-t border-border pt-12">
+        <SectionTitle
+          kicker="Resort guides"
+          heading="Looking for a specific type of resort?"
+          supporting="Roundups comparing options across all-inclusive, Caribbean, beach, luxury, and kids' club resorts."
+        />
+        <div class="mt-8 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          {roundups.map((entry) => (
+            <ArticleCard
+              href={`/articles/${entry.data.slugOverride ?? entry.id}`}
+              image={entry.data.featuredImage}
+              imageAlt={entry.data.featuredImageAlt}
+              category={entry.data.category}
+              title={entry.data.title}
+              excerpt={entry.data.description}
+              meta={entry.data.readingMinutes ? `${entry.data.readingMinutes} min read` : undefined}
+            />
+          ))}
+        </div>
+      </div>
     )}
   </Container>
 </BaseLayout>

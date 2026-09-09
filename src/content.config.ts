@@ -153,6 +153,20 @@ const products = defineCollection({
           }),
         )
         .default([]),
+      // Content-driven rather than a route-level prop, so a new
+      // roundup can include a comparison table without a code change.
+      comparisonTable: z
+        .object({
+          columns: z.array(z.string()),
+          rows: z.array(
+            z.object({
+              label: z.string(),
+              values: z.array(z.string()),
+            }),
+          ),
+          caption: z.string().optional(),
+        })
+        .optional(),
     }),
 });
 

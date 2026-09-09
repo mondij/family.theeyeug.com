@@ -172,3 +172,80 @@ now point at `/articles` (previously `/journal`, which never existed),
 and the homepage's Coral Lagoon resort card now links to the resort's
 real slug (`coral-lagoon-resort-spa`) instead of a shortened one that
 didn't match the actual content file.
+
+## Content: the first 25 pages
+
+The site now has 28 real content pages (25 newly written plus the
+original 3 samples from the previous pass), across all four
+collections:
+
+- **7 destinations**: Florida, California, National Parks, European
+  Cities, European Beaches, Caribbean Islands, Mexico
+- **1 single-property resort review**: Coral Lagoon Resort & Spa
+- **15 articles**: the packing/flying/international-travel/planning/
+  parent-tips guides, four city/activity guides (theme parks, Orlando,
+  Paris, London), and — see below — five "Best X Resorts" roundups
+- **5 product reviews**: kids' backpacks, family luggage, travel toys,
+  kids' headphones, plus the original Wayfinder 40L sample
+
+### Why the "Best X Resorts" pages live in `articles`, not `resorts`
+
+Five of the requested titles — Best All-Inclusive Family Resorts, Best
+Caribbean Family Resorts, Best Beach Resorts For Families, Best Luxury
+Family Resorts, Best Resorts With Kids Clubs — are roundups comparing
+several properties, not a review of one. `ResortLayout` is built
+specifically for a single-property deep dive (one hero, one "who it's
+for," one set of room options), so forcing a 5-resort roundup through
+it would mean a fake location and a fake rating for something that
+isn't one resort.
+
+Instead, these five live in the `articles` collection using
+`TravelGuideLayout`, with each candidate resort as a `sections.items`
+entry (title, body, optional image) rather than a fake dedicated page.
+Coral Lagoon Resort & Spa — the one resort with a real, full review —
+is featured in the relevant roundups and linked via `relatedArticles`,
+so the roundups and the single review reinforce each other instead of
+duplicating content. The `/resorts` listing page surfaces these five
+roundups in a dedicated section below the single-resort grid, so the
+page isn't a dead end while only one full resort review exists.
+
+This is also why `category` values like "All-Inclusive Resorts" and
+"Kids Clubs" appear on `articles` entries — the `/resorts` index page
+filters `getCollection('articles')` by that known category list to
+build its roundup section. Any future article tagged with one of
+those categories will show up there automatically.
+
+### Cross-linking
+
+All 28 pages connect through `relatedArticles`, generally 2–4 links
+each, spanning collections deliberately (a destination links to a
+resort and a guide, a product links to a guide and another product,
+etc.) rather than only linking within its own collection. The two
+original sample pages (`destinations/florida.md`,
+`articles/20-minute-packing-list.md`) were updated to link into the
+new content as well.
+
+### Two real bugs found and fixed while populating this content
+
+1. **Wrong collection prefix.** One `relatedArticles` entry pointed at
+   `articles/best-travel-toys-for-long-flights`, but that page lives in
+   `products/`. Astro's build caught this as a `[WARN] Entry ... was
+   not found` — a good example of why `resolveRelated()` skips
+   unresolvable references instead of crashing the build, and also why
+   it's still worth reading build output closely.
+2. **Duplicated Quick Facts.** `ProductReviewLayout` auto-prepends
+   Rating and Price to the sidebar from the top-level `rating`/`price`
+   fields — the first four product pages I wrote also added "Rating"
+   and "Price" rows inside `quickFacts` manually, so both appeared
+   twice. Fixed by removing the redundant manual rows; `quickFacts`
+   should only carry facts the layout doesn't already generate.
+
+### Schema addition: `comparisonTable`
+
+Added an optional `comparisonTable` field (`columns`, `rows`,
+`caption`) to the `products` schema, so a gear roundup like "Best
+Travel Backpacks For Kids" can include a real comparison table from
+its own frontmatter. This was originally a route-level prop passed
+into `ProductReviewLayout` by hand — moved into the content schema
+itself so a new product review can use it without a code change,
+consistent with the rest of the system.
