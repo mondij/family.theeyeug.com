@@ -1,0 +1,55 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Container from '../components/Container.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import SectionTitle from '../components/SectionTitle.astro';
+
+const breadcrumbItems = [
+  { name: 'Home', href: '/' },
+  { name: 'How we choose', href: '/editorial-standards' },
+];
+
+const principles = [
+  {
+    title: 'No pay-for-placement',
+    body: 'Resorts and products don\u2019t appear in our roundups because they paid to — they appear because they earned it on the merits described in the review.',
+  },
+  {
+    title: 'We disclose affiliate links clearly',
+    body: 'When a link is commercial, we say so, in plain language, on the same page — see our affiliate disclosure for the details.',
+  },
+  {
+    title: 'We update, not just publish',
+    body: 'Every guide shows a publish date and, where relevant, a last-updated date. Prices, opening hours, and policies change; we try to keep pace.',
+  },
+  {
+    title: 'We show trade-offs, not just highlights',
+    body: 'A useful review names what a resort or destination is bad at, not only what it\u2019s good at. Pros-and-cons sections aren\u2019t decorative.',
+  },
+];
+---
+
+<BaseLayout
+  title="How We Choose — Editorial Standards"
+  description="How Nestward chooses what to recommend — no pay-for-placement, clear affiliate disclosure, and honest trade-offs in every review."
+>
+  <Breadcrumbs items={breadcrumbItems} />
+
+  <Container size="content" class="section">
+    <SectionTitle level="h1" kicker="How we choose" heading="Our editorial standards" />
+
+    <div class="mt-10 grid gap-5 sm:grid-cols-2">
+      {principles.map((p) => (
+        <div class="card p-6 sm:p-7">
+          <h2 class="text-lg font-extrabold text-ink">{p.title}</h2>
+          <p class="mt-2.5 text-[0.95rem] leading-relaxed text-ink-soft">{p.body}</p>
+        </div>
+      ))}
+    </div>
+
+    <p class="mt-10 max-w-2xl text-[0.95rem] leading-relaxed text-ink-soft">
+      Have a correction, or think we got something wrong? We'd genuinely like to know —
+      <a href="/contact" class="font-semibold text-green-dark hover:underline">get in touch</a>.
+    </p>
+  </Container>
+</BaseLayout>

@@ -40,7 +40,7 @@ const breadcrumbsLd = breadcrumbSchema(breadcrumbItems.map((b) => ({ name: b.nam
   <Breadcrumbs items={breadcrumbItems} />
 
   <Container size="wide" class="section">
-    <SectionTitle
+    <SectionTitle level="h1"
       kicker="Gear guides"
       heading="Gear that actually earns a spot in the suitcase"
       supporting="Tested on real family trips. We buy most of what we review ourselves — see our editorial standards for how we choose."
@@ -59,6 +59,7 @@ const breadcrumbsLd = breadcrumbSchema(breadcrumbItems.map((b) => ({ name: b.nam
             priceUnit=""
             aspect="square"
             priority={i === 0}
+            headingLevel={i === 0 ? 'h2' : 'h3'}
           >
             <Badge variant="sand">{entry.data.category}</Badge>
           </ImageCard>

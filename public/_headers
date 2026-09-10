@@ -1,0 +1,30 @@
+# Cloudflare Pages custom headers.
+# https://developers.cloudflare.com/pages/configuration/headers/
+
+# Fingerprinted build assets (filenames include a content hash from
+# Vite/Astro) are safe to cache forever — a content change always
+# produces a new filename, so there's no staleness risk.
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Static icons/manifest change rarely; cache for a day and revalidate
+# rather than forever, since these aren't fingerprinted filenames.
+/favicon.svg
+  Cache-Control: public, max-age=86400
+/apple-touch-icon.png
+  Cache-Control: public, max-age=86400
+/site.webmanifest
+  Cache-Control: public, max-age=86400
+/icon-192.png
+  Cache-Control: public, max-age=86400
+/icon-512.png
+  Cache-Control: public, max-age=86400
+/social/*
+  Cache-Control: public, max-age=86400
+
+# Security headers, sitewide.
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()

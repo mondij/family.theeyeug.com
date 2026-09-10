@@ -16,9 +16,22 @@ interface Props {
   teaser: string;
   priority?: boolean;
   class?: string;
+  /** 'h3' when nested under a section heading (default); 'h2' when
+   * this card's title is the first heading after a page's own h1. */
+  headingLevel?: 'h2' | 'h3';
 }
 
-const { href, image, imageAlt, name, teaser, priority = false, class: className } = Astro.props;
+const {
+  href,
+  image,
+  imageAlt,
+  name,
+  teaser,
+  priority = false,
+  class: className,
+  headingLevel = 'h3',
+} = Astro.props;
+const Heading = headingLevel;
 ---
 
 <a
@@ -39,7 +52,7 @@ const { href, image, imageAlt, name, teaser, priority = false, class: className 
   />
   <div class="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/15 to-transparent"></div>
   <div class="relative z-10 p-5 sm:p-6">
-    <h3 class="text-2xl font-extrabold text-white">{name}</h3>
+    <Heading class="text-2xl font-extrabold text-white">{name}</Heading>
     <p class="mt-1.5 text-sm leading-relaxed text-white/90">{teaser}</p>
   </div>
 </a>

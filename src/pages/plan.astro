@@ -1,0 +1,78 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Container from '../components/Container.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import SectionTitle from '../components/SectionTitle.astro';
+import Button from '../components/Button.astro';
+import Card from '../components/Card.astro';
+
+const destinations = await getCollection('destinations');
+
+const breadcrumbItems = [
+  { name: 'Home', href: '/' },
+  { name: 'Start planning', href: '/plan' },
+];
+
+const steps = [
+  {
+    title: '1. Pick a trip style',
+    body: 'Beach, theme park, national park, or city break — start with the kind of trip, and the right destinations follow.',
+    cta: { label: 'Browse trip styles', href: '/trip-styles' },
+  },
+  {
+    title: '2. Narrow it down by age',
+    body: 'Every destination guide notes what ages it actually suits — toddlers, tweens, teens, or a multigenerational group.',
+    cta: { label: 'See all destinations', href: '/destinations' },
+  },
+  {
+    title: '3. Shortlist a resort',
+    body: 'Once you know where, our resort reviews and roundups help you pick where to actually stay.',
+    cta: { label: 'Browse family resorts', href: '/resorts' },
+  },
+  {
+    title: '4. Get the logistics right',
+    body: 'Packing, flying with kids, passports — the practical guides that make the trip itself go smoothly.',
+    cta: { label: 'Read the journal', href: '/articles' },
+  },
+];
+---
+
+<BaseLayout
+  title="Start Planning Your Family Trip"
+  description="A simple starting point for planning your next family vacation — trip styles, destinations, resorts, and the practical guides that tie it together."
+>
+  <Breadcrumbs items={breadcrumbItems} />
+
+  <Container size="content" class="section">
+    <SectionTitle level="h1"
+      align="center"
+      kicker="Start planning"
+      heading="Tell us what you're picturing, and we'll help you narrow it down"
+      supporting="We don't have a booking engine (yet) — what we do have is honest, specific guidance at every step, starting here."
+    />
+
+    <div class="mx-auto mt-12 grid max-w-3xl gap-5">
+      {steps.map((step) => (
+        <Card padding="spacious" class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h2 class="text-lg font-extrabold text-ink">{step.title}</h2>
+            <p class="mt-1.5 max-w-md text-[0.95rem] leading-relaxed text-ink-soft">{step.body}</p>
+          </div>
+          <Button href={step.cta.href} variant="secondary" class="shrink-0 justify-center">
+            {step.cta.label}
+          </Button>
+        </Card>
+      ))}
+    </div>
+
+    {destinations.length > 0 && (
+      <div class="mx-auto mt-16 max-w-3xl text-center">
+        <p class="text-sm text-ink-soft">
+          Currently covering {destinations.length} destination{destinations.length === 1 ? '' : 's'},
+          with more added regularly.
+        </p>
+      </div>
+    )}
+  </Container>
+</BaseLayout>

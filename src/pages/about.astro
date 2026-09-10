@@ -1,0 +1,47 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Container from '../components/Container.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import SectionTitle from '../components/SectionTitle.astro';
+
+const breadcrumbItems = [
+  { name: 'Home', href: '/' },
+  { name: 'About us', href: '/about' },
+];
+---
+
+<BaseLayout
+  title="About Nestward"
+  description="Nestward is a family travel guide written by parents who plan around nap times and school terms, not just flight deals."
+>
+  <Breadcrumbs items={breadcrumbItems} />
+
+  <Container size="narrow" class="section">
+    <SectionTitle level="h1" kicker="About us" heading="Trip planning written by parents, for parents" />
+
+    <div class="prose-editorial mt-8 max-w-none">
+      <p class="mb-5 text-lg leading-relaxed text-ink-soft">
+        Nestward started from a familiar frustration: most travel content is
+        either written for people without kids and awkwardly adapted, or
+        written for kids and thin on the details parents actually need —
+        flight times, nap schedules, which beach has a drop-off twenty
+        feet from shore.
+      </p>
+      <p class="mb-5 text-lg leading-relaxed text-ink-soft">
+        We write destination guides, resort reviews, and gear
+        recommendations the way we'd explain them to a friend: what's
+        genuinely worth it, what to skip, and what tends to catch
+        first-time visitors out. Every guide is written or edited by our
+        small team, and updated when things change rather than left to
+        go stale.
+      </p>
+      <p class="mb-5 text-lg leading-relaxed text-ink-soft">
+        We're upfront that some links on Nestward are affiliate links —
+        see our <a href="/affiliate-disclosure" class="font-semibold text-green-dark hover:underline">affiliate disclosure</a>
+        for exactly what that means. It never changes what we recommend;
+        see <a href="/editorial-standards" class="font-semibold text-green-dark hover:underline">how we choose</a>
+        for more on that.
+      </p>
+    </div>
+  </Container>
+</BaseLayout>

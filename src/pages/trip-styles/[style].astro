@@ -1,0 +1,98 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Container from '../../components/Container.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import SectionTitle from '../../components/SectionTitle.astro';
+import DestinationCard from '../../components/DestinationCard.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import { breadcrumbSchema } from '../../lib/schema';
+import { tripStyles } from '../../lib/tripStyles';
+
+export async function getStaticPaths() {
+  return tripStyles.map((style) => ({
+    params: { style: style.slug },
+    props: { style },
+  }));
+}
+
+const { style } = Astro.props;
+
+const allDestinations = await getCollection('destinations');
+const matchingDestinations = style.tripStyleTag
+  ? allDestinations.filter((entry) => entry.data.tripStyle.includes(style.tripStyleTag!))
+  : [];
+
+const allArticles = await getCollection('articles');
+const matchingArticles = allArticles.filter((entry) =>
+  style.articleCategories.includes(entry.data.category),
+);
+
+const hasResults = matchingDestinations.length > 0 || matchingArticles.length > 0;
+
+const breadcrumbItems = [
+  { name: 'Home', href: '/' },
+  { name: 'Things to do', href: '/trip-styles' },
+  { name: style.label, href: `/trip-styles/${style.slug}` },
+];
+const breadcrumbsLd = breadcrumbSchema(breadcrumbItems.map((b) => ({ name: b.name, url: b.href })));
+---
+
+<BaseLayout
+  title={style.label}
+  description={`${style.description} Destinations, resorts, and guides for ${style.label.toLowerCase()}.`}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbsLd)} />
+  </Fragment>
+
+  <Breadcrumbs items={breadcrumbItems} />
+
+  <Container size="wide" class="section">
+    <SectionTitle level="h1" kicker="Things to do" heading={style.label} supporting={style.description} />
+
+    {matchingDestinations.length > 0 && (
+      <div class="mt-10">
+        <h2 class="text-xl font-extrabold text-ink">Destinations</h2>
+        <div class="mt-5 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">
+          {matchingDestinations.map((entry, i) => (
+            <DestinationCard
+              href={`/destinations/${entry.data.slugOverride ?? entry.id}`}
+              image={entry.data.featuredImage}
+              imageAlt={entry.data.featuredImageAlt}
+              name={entry.data.title}
+              teaser={entry.data.description}
+              priority={i === 0}
+            />
+          ))}
+        </div>
+      </div>
+    )}
+
+    {matchingArticles.length > 0 && (
+      <div class="mt-14">
+        <h2 class="text-xl font-extrabold text-ink">Guides</h2>
+        <div class="mt-5 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          {matchingArticles.map((entry) => (
+            <ArticleCard
+              href={`/articles/${entry.data.slugOverride ?? entry.id}`}
+              image={entry.data.featuredImage}
+              imageAlt={entry.data.featuredImageAlt}
+              category={entry.data.category}
+              title={entry.data.title}
+              excerpt={entry.data.description}
+              meta={entry.data.readingMinutes ? `${entry.data.readingMinutes} min read` : undefined}
+            />
+          ))}
+        </div>
+      </div>
+    )}
+
+    {!hasResults && (
+      <p class="mt-10 text-ink-soft">
+        We're still building out guides for {style.label.toLowerCase()} — check back soon, or
+        browse <a href="/destinations" class="font-semibold text-green-dark hover:underline">all destinations</a> in the meantime.
+      </p>
+    )}
+  </Container>
+</BaseLayout>

@@ -18,6 +18,9 @@ interface Props {
   meta?: string;
   featured?: boolean;
   priority?: boolean;
+  /** 'h3' when nested under a section heading (default); 'h2' when
+   * this card's title is the first heading after a page's own h1. */
+  headingLevel?: 'h2' | 'h3';
 }
 
 const {
@@ -30,7 +33,9 @@ const {
   meta,
   featured = false,
   priority = false,
+  headingLevel = 'h3',
 } = Astro.props;
+const Heading = headingLevel;
 ---
 
 <a
@@ -53,9 +58,9 @@ const {
   </div>
   <div class:list={['flex flex-col gap-2', featured && 'sm:pr-4']}>
     <p class="text-xs font-bold uppercase tracking-wide text-green-dark">{category}</p>
-    <h3 class:list={['font-extrabold leading-snug text-ink', featured ? 'text-2xl sm:text-3xl' : 'text-lg']}>
+    <Heading class:list={['font-extrabold leading-snug text-ink', featured ? 'text-2xl sm:text-3xl' : 'text-lg']}>
       {title}
-    </h3>
+    </Heading>
     <p class:list={['text-ink-soft', featured ? 'text-base' : 'text-sm']}>{excerpt}</p>
     {meta && <p class="mt-1 text-xs text-ink-faint">{meta}</p>}
   </div>

@@ -12,10 +12,23 @@ interface Props {
   supporting?: string;
   align?: 'left' | 'center';
   tone?: 'light' | 'dark';
+  /** Use 'h1' when this is a page's main heading (most listing/utility
+   * pages) rather than a section within a page that already has its
+   * own h1 (e.g. content pages via ArticleHero, the homepage Hero). */
+  level?: 'h1' | 'h2';
   class?: string;
 }
 
-const { kicker, heading, supporting, align = 'left', tone = 'light', class: className } = Astro.props;
+const {
+  kicker,
+  heading,
+  supporting,
+  align = 'left',
+  tone = 'light',
+  level = 'h2',
+  class: className,
+} = Astro.props;
+const Heading = level;
 ---
 
 <div
@@ -30,14 +43,14 @@ const { kicker, heading, supporting, align = 'left', tone = 'light', class: clas
       {kicker}
     </p>
   )}
-  <h2
+  <Heading
     class:list={[
       'text-3xl sm:text-4xl',
       tone === 'dark' ? 'text-white' : 'text-ink',
     ]}
   >
     {heading}
-  </h2>
+  </Heading>
   {supporting && (
     <p class:list={['text-lg', tone === 'dark' ? 'text-white/85' : 'text-ink-soft']}>
       {supporting}

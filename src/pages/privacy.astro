@@ -1,0 +1,66 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Container from '../components/Container.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import SectionTitle from '../components/SectionTitle.astro';
+
+const breadcrumbItems = [
+  { name: 'Home', href: '/' },
+  { name: 'Privacy policy', href: '/privacy' },
+];
+const lastUpdated = 'September 1, 2026';
+---
+
+<BaseLayout
+  title="Privacy Policy"
+  description="How Nestward collects, uses, and protects information from visitors to this site."
+>
+  <Breadcrumbs items={breadcrumbItems} />
+
+  <Container size="narrow" class="section">
+    <SectionTitle level="h1" kicker="Privacy policy" heading="Privacy policy" />
+    <p class="mt-4 text-sm text-ink-faint">Last updated {lastUpdated}</p>
+
+    <div class="prose-editorial mt-8 max-w-none">
+      <h2 class="mt-8 text-xl font-extrabold text-ink">What we collect</h2>
+      <p class="mb-5 text-lg leading-relaxed text-ink-soft">
+        If you subscribe to our newsletter, we collect your email address
+        for that purpose only. Like most websites, we also collect basic,
+        aggregated analytics about how visitors use the site — pages
+        viewed, general location at a country or city level, and device
+        type — to understand what content is useful.
+      </p>
+
+      <h2 class="mt-8 text-xl font-extrabold text-ink">How we use it</h2>
+      <p class="mb-5 text-lg leading-relaxed text-ink-soft">
+        Email addresses are used solely to send the newsletter you signed
+        up for, and never sold or shared with third parties for
+        marketing purposes. Aggregated analytics inform which guides we
+        write and update next.
+      </p>
+
+      <h2 class="mt-8 text-xl font-extrabold text-ink">Cookies and affiliate links</h2>
+      <p class="mb-5 text-lg leading-relaxed text-ink-soft">
+        Some outbound links on Nestward are affiliate links, which may
+        set a cookie via the destination site to track a resulting
+        booking or purchase. See our
+        <a href="/affiliate-disclosure" class="font-semibold text-green-dark hover:underline">affiliate disclosure</a>
+        for details. We don't control cookies set by third-party sites
+        once you leave Nestward.
+      </p>
+
+      <h2 class="mt-8 text-xl font-extrabold text-ink">Your choices</h2>
+      <p class="mb-5 text-lg leading-relaxed text-ink-soft">
+        You can unsubscribe from our newsletter at any time using the
+        link in any email we send. To request deletion of any personal
+        data we hold about you, contact us at the address below.
+      </p>
+
+      <h2 class="mt-8 text-xl font-extrabold text-ink">Contact</h2>
+      <p class="text-lg leading-relaxed text-ink-soft">
+        Questions about this policy? Reach us via our
+        <a href="/contact" class="font-semibold text-green-dark hover:underline">contact page</a>.
+      </p>
+    </div>
+  </Container>
+</BaseLayout>

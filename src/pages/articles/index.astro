@@ -34,7 +34,7 @@ const breadcrumbsLd = breadcrumbSchema(breadcrumbItems.map((b) => ({ name: b.nam
   <Breadcrumbs items={breadcrumbItems} />
 
   <Container size="wide" class="section">
-    <SectionTitle
+    <SectionTitle level="h1"
       kicker="Journal"
       heading="Longer reads for the planning rabbit-hole hours"
       supporting="Packing lists, honest reviews, and season-by-season advice — written by parents who've done the trip already."
@@ -52,6 +52,7 @@ const breadcrumbsLd = breadcrumbSchema(breadcrumbItems.map((b) => ({ name: b.nam
           meta={featuredEntry.data.readingMinutes ? `${featuredEntry.data.readingMinutes} min read` : undefined}
           featured
           priority
+          headingLevel="h2"
         />
 
         {restEntries.length > 0 && (

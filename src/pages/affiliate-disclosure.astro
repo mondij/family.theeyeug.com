@@ -1,0 +1,47 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Container from '../components/Container.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import SectionTitle from '../components/SectionTitle.astro';
+
+const breadcrumbItems = [
+  { name: 'Home', href: '/' },
+  { name: 'Affiliate disclosure', href: '/affiliate-disclosure' },
+];
+---
+
+<BaseLayout
+  title="Affiliate Disclosure"
+  description="How Nestward uses affiliate links, and how that does and doesn't affect what we recommend."
+>
+  <Breadcrumbs items={breadcrumbItems} />
+
+  <Container size="narrow" class="section">
+    <SectionTitle level="h1" kicker="Affiliate disclosure" heading="How we make money" />
+
+    <div class="prose-editorial mt-8 max-w-none">
+      <p class="mb-5 text-lg leading-relaxed text-ink-soft">
+        Some links on Nestward — to resorts, hotels, and products we
+        review — are affiliate links. If you click through and book or
+        buy something, we may earn a small commission from the retailer
+        or booking partner. This costs you nothing extra.
+      </p>
+      <p class="mb-5 text-lg leading-relaxed text-ink-soft">
+        This doesn't change our recommendations. We don't accept payment
+        in exchange for a positive review or a spot in a roundup, and
+        resorts or products can't buy their way onto our lists. Where we
+        have a direct relationship with a brand — such as receiving a
+        product to test — we say so on the relevant page.
+      </p>
+      <p class="mb-5 text-lg leading-relaxed text-ink-soft">
+        Any "Where to book" or "Where to buy" box on a page will carry
+        this same disclosure, so it's never buried — you'll see it right
+        next to the link itself.
+      </p>
+      <p class="text-lg leading-relaxed text-ink-soft">
+        Questions about a specific link or partnership?
+        <a href="/contact" class="font-semibold text-green-dark hover:underline">Get in touch</a>.
+      </p>
+    </div>
+  </Container>
+</BaseLayout>

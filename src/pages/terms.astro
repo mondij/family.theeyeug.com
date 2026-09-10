@@ -1,0 +1,63 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Container from '../components/Container.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import SectionTitle from '../components/SectionTitle.astro';
+
+const breadcrumbItems = [
+  { name: 'Home', href: '/' },
+  { name: 'Terms of use', href: '/terms' },
+];
+const lastUpdated = 'September 1, 2026';
+---
+
+<BaseLayout
+  title="Terms of Use"
+  description="The terms governing your use of the Nestward website."
+>
+  <Breadcrumbs items={breadcrumbItems} />
+
+  <Container size="narrow" class="section">
+    <SectionTitle level="h1" kicker="Terms of use" heading="Terms of use" />
+    <p class="mt-4 text-sm text-ink-faint">Last updated {lastUpdated}</p>
+
+    <div class="prose-editorial mt-8 max-w-none">
+      <h2 class="mt-8 text-xl font-extrabold text-ink">Using this site</h2>
+      <p class="mb-5 text-lg leading-relaxed text-ink-soft">
+        Nestward provides travel guides, reviews, and recommendations for
+        informational purposes. Prices, availability, opening hours, and
+        entry requirements change — always confirm current details
+        directly with the relevant resort, airline, or venue before
+        booking or traveling.
+      </p>
+
+      <h2 class="mt-8 text-xl font-extrabold text-ink">No travel advice guarantee</h2>
+      <p class="mb-5 text-lg leading-relaxed text-ink-soft">
+        Our content reflects our own research and experience at the time
+        of writing. We aren't a travel agency or booking service, and we
+        can't guarantee outcomes for trips planned using our guides.
+      </p>
+
+      <h2 class="mt-8 text-xl font-extrabold text-ink">Affiliate links</h2>
+      <p class="mb-5 text-lg leading-relaxed text-ink-soft">
+        Some links on this site are affiliate links, disclosed in full in
+        our <a href="/affiliate-disclosure" class="font-semibold text-green-dark hover:underline">affiliate disclosure</a>.
+        We are not responsible for the products, services, or policies of
+        third-party sites we link to.
+      </p>
+
+      <h2 class="mt-8 text-xl font-extrabold text-ink">Content ownership</h2>
+      <p class="mb-5 text-lg leading-relaxed text-ink-soft">
+        Text, images, and other content on Nestward belong to Nestward
+        Travel Ltd. unless otherwise credited, and may not be
+        reproduced without permission.
+      </p>
+
+      <h2 class="mt-8 text-xl font-extrabold text-ink">Changes to these terms</h2>
+      <p class="text-lg leading-relaxed text-ink-soft">
+        We may update these terms from time to time; the "last updated"
+        date above reflects the most recent revision.
+      </p>
+    </div>
+  </Container>
+</BaseLayout>

@@ -1,7 +1,9 @@
 ---
+import { getCollection } from 'astro:content';
+import { getImage } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Container from '../components/Container.astro';
-import Button from '../components/Button.astro';
 import Card from '../components/Card.astro';
 import SectionTitle from '../components/SectionTitle.astro';
 import Hero from '../components/Hero.astro';
@@ -10,6 +12,8 @@ import DestinationCard from '../components/DestinationCard.astro';
 import ResortCard from '../components/ResortCard.astro';
 import ArticleCard from '../components/ArticleCard.astro';
 import Newsletter from '../components/Newsletter.astro';
+import Button from '../components/Button.astro';
+import { tripStyles } from '../lib/tripStyles';
 
 import heroFamily from '../assets/images/hero-family.jpg';
 import catBeach from '../assets/images/cat-beach.jpg';
@@ -18,78 +22,46 @@ import catAllInclusive from '../assets/images/cat-all-inclusive.jpg';
 import catAdventure from '../assets/images/cat-adventure.jpg';
 import catCityBreaks from '../assets/images/cat-city-breaks.jpg';
 import catNationalParks from '../assets/images/cat-national-parks.jpg';
-import destFlorida from '../assets/images/dest-florida.jpg';
-import destCaribbean from '../assets/images/dest-caribbean.jpg';
-import destItaly from '../assets/images/dest-italy.jpg';
-import destMexico from '../assets/images/dest-mexico.jpg';
-import destJapan from '../assets/images/dest-japan.jpg';
-import resortLagoon from '../assets/images/resort-lagoon.jpg';
-import destinationMountain from '../assets/images/destination-mountain.jpg';
-import destinationDesert from '../assets/images/destination-desert.jpg';
-import articlePacking from '../assets/images/article-packing.jpg';
-import articleBudget from '../assets/images/article-budget.jpg';
-import journalBanner from '../assets/images/journal-banner.jpg';
 
-const categories = [
-  { label: 'Beach Vacations', image: catBeach, href: '/trip-styles/beach' },
-  { label: 'Theme Parks', image: catThemeParks, href: '/trip-styles/theme-parks' },
-  { label: 'All-Inclusive Resorts', image: catAllInclusive, href: '/trip-styles/all-inclusive' },
-  { label: 'Adventure Trips', image: catAdventure, href: '/trip-styles/adventure' },
-  { label: 'City Breaks', image: catCityBreaks, href: '/trip-styles/city-breaks' },
-  { label: 'National Parks', image: catNationalParks, href: '/trip-styles/national-parks' },
-];
+const categoryImages: Record<string, ImageMetadata> = {
+  beach: catBeach,
+  'theme-parks': catThemeParks,
+  'all-inclusive': catAllInclusive,
+  adventure: catAdventure,
+  'city-breaks': catCityBreaks,
+  'national-parks': catNationalParks,
+};
 
-const destinations = [
-  {
-    name: 'Florida',
-    image: destFlorida,
-    teaser: 'Endless beaches and theme parks, with some of the easiest flights from anywhere in North America.',
-  },
-  {
-    name: 'Caribbean',
-    image: destCaribbean,
-    teaser: 'Turquoise water and slow mornings, spread across a dozen islands built for easy family trips.',
-  },
-  {
-    name: 'Italy',
-    image: destItaly,
-    teaser: 'Gelato, ruins, and villages small enough for little legs to explore on foot.',
-  },
-  {
-    name: 'Mexico',
-    image: destMexico,
-    teaser: 'All-inclusive resorts and warm water, a short flight from most major US and Canadian cities.',
-  },
-  {
-    name: 'Japan',
-    image: destJapan,
-    teaser: 'Bullet trains, gentle temples, and some of the most kid-delighted food on earth.',
-  },
-];
+// Everything below is pulled live from the content collections rather
+// than hardcoded, so the homepage can never point at a destination,
+// resort, or article that doesn't actually exist.
+const featuredByDateDesc = <T extends { data: { featured: boolean; publishDate: Date } }>(entries: T[]) =>
+  [...entries].sort((a, b) => {
+    if (a.data.featured !== b.data.featured) return a.data.featured ? -1 : 1;
+    return b.data.publishDate.valueOf() - a.data.publishDate.valueOf();
+  });
 
-const resorts = [
-  {
-    name: 'Coral Lagoon Resort & Spa',
-    location: 'Riviera Maya, Mexico',
-    bestFor: 'toddlers & preschoolers',
-    image: resortLagoon,
-    href: '/resorts/coral-lagoon-resort-spa',
-  },
-  {
-    name: 'Alpine Meadow Family Lodge',
-    location: 'Interlaken, Switzerland',
-    bestFor: 'tweens & teens',
-    image: destinationMountain,
-    href: '/resorts/alpine-meadow',
-  },
-  {
-    name: 'Dune Valley Ranch Resort',
-    location: 'Scottsdale, Arizona',
-    bestFor: 'multigenerational trips',
-    image: destinationDesert,
-    href: '/resorts/dune-valley',
-  },
+const allDestinations = await getCollection('destinations');
+const topDestinations = featuredByDateDesc(allDestinations).slice(0, 5);
+
+const allResorts = await getCollection('resorts');
+const resortRoundupCategories = [
+  'All-Inclusive Resorts',
+  'Caribbean Resorts',
+  'Beach Resorts',
+  'Luxury Resorts',
+  'Kids Clubs',
 ];
+const allArticles = await getCollection('articles');
+const resortRoundups = allArticles.filter((entry) => resortRoundupCategories.includes(entry.data.category));
+
+const journalEntries = featuredByDateDesc(
+  allArticles.filter((entry) => !resortRoundupCategories.includes(entry.data.category)),
+);
+const [featuredArticle, ...restArticles] = journalEntries;
+const secondaryArticles = restArticles.slice(0, 2);
+
+const ogImage = await getImage({ src: heroFamily, width: 1200, height: 630 });
 
 const tips = [
   {
@@ -114,6 +86,7 @@ const tips = [
 <BaseLayout
   title="Nestward — family trip planning, done properly"
   description="Discover family-friendly destinations, resorts, and travel advice — with honest guides written for parents, not algorithms."
+  image={ogImage.src}
 >
   <Hero
     image={heroFamily}
@@ -133,12 +106,12 @@ const tips = [
         supporting="Six ways families usually start planning — pick one to see destinations and resorts that fit."
       />
       <div class="mt-10 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-6">
-        {categories.map((cat, i) => (
+        {tripStyles.map((style, i) => (
           <TravelCategoryCard
-            href={cat.href}
-            image={cat.image}
-            imageAlt={`Illustration representing ${cat.label}`}
-            label={cat.label}
+            href={`/trip-styles/${style.slug}`}
+            image={categoryImages[style.slug]}
+            imageAlt={`Illustration representing ${style.label}`}
+            label={style.label}
             priority={i < 3}
           />
         ))}
@@ -151,21 +124,24 @@ const tips = [
     <Container size="wide">
       <SectionTitle
         kicker="Featured destinations"
-        heading="Five places families keep going back to"
+        heading="Places families keep going back to"
         supporting="Chosen for the mix of things that actually matter with kids: flight time, food options, and something for every age."
       />
       <div class="mt-10 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-5">
-        {destinations.map((dest, i) => (
+        {topDestinations.map((entry, i) => (
           <DestinationCard
-            href={`/destinations/${dest.name.toLowerCase()}`}
-            image={dest.image}
-            imageAlt={`Illustration representing ${dest.name}`}
-            name={dest.name}
-            teaser={dest.teaser}
+            href={`/destinations/${entry.data.slugOverride ?? entry.id}`}
+            image={entry.data.featuredImage}
+            imageAlt={entry.data.featuredImageAlt}
+            name={entry.data.title}
+            teaser={entry.data.description}
             priority={i === 0}
             class={i === 4 ? 'col-span-2 sm:col-span-1' : ''}
           />
         ))}
+      </div>
+      <div class="mt-8 text-center">
+        <Button href="/destinations" variant="secondary">See all destinations</Button>
       </div>
     </Container>
   </section>
@@ -175,66 +151,80 @@ const tips = [
     <Container size="wide">
       <SectionTitle
         kicker="Family resorts"
-        heading="A short, honest shortlist of resorts we’d actually book"
+        heading="A short, honest shortlist of resorts we'd actually book"
         supporting="No sponsored placements — every resort here earned its spot from reviews and our own editors' research."
       />
-      <div class="mt-10 grid gap-6 md:grid-cols-3">
-        {resorts.map((resort) => (
-          <ResortCard
-            href={resort.href}
-            image={resort.image}
-            imageAlt={`Illustration representing ${resort.name}`}
-            name={resort.name}
-            location={resort.location}
-            bestFor={resort.bestFor}
-          />
-        ))}
-      </div>
+      {allResorts.length > 0 && (
+        <div class="mt-10 grid gap-6 md:grid-cols-3">
+          {allResorts.map((entry) => (
+            <ResortCard
+              href={`/resorts/${entry.data.slugOverride ?? entry.id}`}
+              image={entry.data.featuredImage}
+              imageAlt={entry.data.featuredImageAlt}
+              name={entry.data.title}
+              location={entry.data.location}
+              bestFor={entry.data.bestForSummary.replace(/^Best for /i, '').split(/ who | that |,/i)[0].replace(/\.$/, '')}
+            />
+          ))}
+        </div>
+      )}
+      {resortRoundups.length > 0 && (
+        <div class="mt-10">
+          <p class="text-sm font-semibold text-ink-soft">Or browse resort guides by type:</p>
+          <div class="mt-4 flex flex-wrap gap-3">
+            {resortRoundups.map((entry) => (
+              <a
+                href={`/articles/${entry.data.slugOverride ?? entry.id}`}
+                class="rounded-full border border-border px-4 py-2 text-sm font-semibold text-ink-soft transition-colors hover:border-green hover:text-green-dark"
+              >
+                {entry.data.category}
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
     </Container>
   </section>
 
   <!-- Travel Inspiration -->
-  <section class="section bg-bg-subtle">
-    <Container size="wide">
-      <SectionTitle
-        kicker="Travel inspiration"
-        heading="Longer reads for the planning rabbit-hole hours"
-      />
-      <div class="mt-10 flex flex-col gap-12">
-        <ArticleCard
-          href="/journal/packing-list"
-          image={articlePacking}
-          imageAlt="Warm illustration of a coastline at dusk"
-          category="Packing"
-          title="The 20-minute packing list that actually works"
-          excerpt="A parent-tested system for packing a family of four without the 11pm meltdown over missing swimsuits."
-          meta="8 min read"
-          featured
-          priority
+  {featuredArticle && (
+    <section class="section bg-bg-subtle">
+      <Container size="wide">
+        <SectionTitle
+          kicker="Travel inspiration"
+          heading="Longer reads for the planning rabbit-hole hours"
         />
-        <div class="grid gap-8 sm:grid-cols-2">
+        <div class="mt-10 flex flex-col gap-12">
           <ArticleCard
-            href="/journal/flying-with-toddlers"
-            image={journalBanner}
-            imageAlt="Warm illustration of a dawn sky over gentle hills"
-            category="Flying with kids"
-            title="How to fly with toddlers and (mostly) enjoy it"
-            excerpt="What actually helps on a long-haul flight, from seat selection to snack timing."
-            meta="6 min read"
+            href={`/articles/${featuredArticle.data.slugOverride ?? featuredArticle.id}`}
+            image={featuredArticle.data.featuredImage}
+            imageAlt={featuredArticle.data.featuredImageAlt}
+            category={featuredArticle.data.category}
+            title={featuredArticle.data.title}
+            excerpt={featuredArticle.data.description}
+            meta={featuredArticle.data.readingMinutes ? `${featuredArticle.data.readingMinutes} min read` : undefined}
+            featured
+            priority
           />
-          <ArticleCard
-            href="/journal/family-trips-on-a-budget"
-            image={articleBudget}
-            imageAlt="Warm illustration of rolling hills at sunset"
-            category="Budget travel"
-            title="Family trips that don't break the budget"
-            excerpt="Where the real savings are — and the corners that aren't worth cutting when you're travelling with kids."
-            meta="7 min read"
-          />
+          {secondaryArticles.length > 0 && (
+            <div class="grid gap-8 sm:grid-cols-2">
+              {secondaryArticles.map((entry) => (
+                <ArticleCard
+                  href={`/articles/${entry.data.slugOverride ?? entry.id}`}
+                  image={entry.data.featuredImage}
+                  imageAlt={entry.data.featuredImageAlt}
+                  category={entry.data.category}
+                  title={entry.data.title}
+                  excerpt={entry.data.description}
+                  meta={entry.data.readingMinutes ? `${entry.data.readingMinutes} min read` : undefined}
+                />
+              ))}
+            </div>
+          )}
         </div>
-      </div>
-    </Container>
-  </section>
+      </Container>
+    </section>
+  )}
 
   <!-- Family Travel Tips -->
   <section class="section">

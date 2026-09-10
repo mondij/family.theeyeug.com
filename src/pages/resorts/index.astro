@@ -60,7 +60,7 @@ const breadcrumbsLd = breadcrumbSchema(breadcrumbItems.map((b) => ({ name: b.nam
   <Breadcrumbs items={breadcrumbItems} />
 
   <Container size="wide" class="section">
-    <SectionTitle
+    <SectionTitle level="h1"
       kicker="Family resorts"
       heading="A short, honest shortlist of resorts we'd actually book"
       supporting="No sponsored placements — every resort here earned its spot from reviews and our own editors' research."
@@ -77,6 +77,7 @@ const breadcrumbsLd = breadcrumbSchema(breadcrumbItems.map((b) => ({ name: b.nam
             location={entry.data.location}
             bestFor={shortBestFor(entry.data.bestForSummary)}
             priority={i === 0}
+            headingLevel={i === 0 ? 'h2' : 'h3'}
           />
         ))}
       </div>

@@ -8,12 +8,15 @@
 interface Props {
   pros: string[];
   cons: string[];
+  title?: string;
 }
 
-const { pros, cons } = Astro.props;
+const { pros, cons, title = 'Pros and cons' } = Astro.props;
 ---
 
-<div class="grid gap-5 sm:grid-cols-2">
+<div>
+  <h2 class="mb-5 text-2xl font-extrabold text-ink">{title}</h2>
+  <div class="grid gap-5 sm:grid-cols-2">
   <div class="card p-6">
     <h3 class="flex items-center gap-2 text-base font-extrabold text-ink">
       <span class="flex h-6 w-6 items-center justify-center rounded-full bg-green-light text-green-dark">
@@ -50,5 +53,6 @@ const { pros, cons } = Astro.props;
         </li>
       ))}
     </ul>
+  </div>
   </div>
 </div>

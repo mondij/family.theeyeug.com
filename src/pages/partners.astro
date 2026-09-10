@@ -1,0 +1,43 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Container from '../components/Container.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import SectionTitle from '../components/SectionTitle.astro';
+import Button from '../components/Button.astro';
+
+const breadcrumbItems = [
+  { name: 'Home', href: '/' },
+  { name: 'Work with us', href: '/partners' },
+];
+---
+
+<BaseLayout
+  title="Work With Nestward"
+  description="For resorts, destination boards, and family travel brands interested in working with Nestward."
+>
+  <Breadcrumbs items={breadcrumbItems} />
+
+  <Container size="narrow" class="section">
+    <SectionTitle level="h1" kicker="Work with us" heading="For resorts and family travel brands" />
+
+    <div class="prose-editorial mt-8 max-w-none">
+      <p class="mb-5 text-lg leading-relaxed text-ink-soft">
+        Nestward reviews family resorts, destinations, and travel gear for
+        parents planning their next trip. If you're part of a resort,
+        tourism board, or family travel brand and think you'd be a good
+        fit for a review or roundup, we'd like to hear from you.
+      </p>
+      <p class="mb-5 text-lg leading-relaxed text-ink-soft">
+        We don't offer pay-for-placement — every recommendation on
+        Nestward is based on our own research and, where possible, a real
+        stay or hands-on product test. See our
+        <a href="/editorial-standards" class="font-semibold text-green-dark hover:underline">editorial standards</a>
+        for more detail on how that works.
+      </p>
+    </div>
+
+    <Button href="mailto:partners@nestward.example" variant="primary" class="mt-4">
+      partners@nestward.example
+    </Button>
+  </Container>
+</BaseLayout>

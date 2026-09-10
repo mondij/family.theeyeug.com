@@ -89,3 +89,28 @@ export function breadcrumbSchema(items: BreadcrumbItem[]) {
     })),
   };
 }
+
+/**
+ * Organization + WebSite schema, emitted once sitewide (in
+ * BaseLayout, on every page) rather than per content type. This is
+ * what makes a brand knowledge panel / sitelinks search box possible
+ * in search results, and costs nothing to include everywhere.
+ */
+export function organizationSchema(siteUrl: string) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'Nestward',
+    url: siteUrl,
+    logo: new URL('/favicon.svg', siteUrl).toString(),
+  };
+}
+
+export function websiteSchema(siteUrl: string) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'Nestward',
+    url: siteUrl,
+  };
+}

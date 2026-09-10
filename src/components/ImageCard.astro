@@ -24,6 +24,9 @@ interface Props {
   aspect?: 'portrait' | 'square' | 'wide';
   priority?: boolean;
   class?: string;
+  /** 'h3' when nested under a section heading (default); 'h2' when
+   * this card's title is the first heading after a page's own h1. */
+  headingLevel?: 'h2' | 'h3';
 }
 
 const {
@@ -39,7 +42,9 @@ const {
   aspect = 'wide',
   priority = false,
   class: className,
+  headingLevel = 'h3',
 } = Astro.props;
+const Heading = headingLevel;
 
 const aspectClass = {
   portrait: 'aspect-[4/5]',
@@ -70,20 +75,10 @@ const aspectClass = {
         <slot name="badge" />
       </div>
     )}
-    <button
-      type="button"
-      aria-label="Save to trip list"
-      class="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-white/95 text-ink-soft shadow-sm transition-colors hover:text-coral"
-      onclick="event.preventDefault()"
-    >
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M12 21s-7.5-4.6-10-9.1C0.3 8.4 2 4.5 5.6 4A5.4 5.4 0 0 1 12 7.3 5.4 5.4 0 0 1 18.4 4c3.6 0.5 5.3 4.4 3.6 7.9C19.5 16.4 12 21 12 21z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
-      </svg>
-    </button>
   </div>
 
   <div class="flex flex-1 flex-col gap-1.5 p-4">
-    <h3 class="text-base font-bold leading-snug text-ink">{title}</h3>
+    <Heading class="text-base font-bold leading-snug text-ink">{title}</Heading>
     {location && <p class="text-sm text-ink-soft">{location}</p>}
     {typeof rating === 'number' && (
       <RatingBubbles rating={rating} reviewCount={reviewCount} size="sm" class="mt-0.5" />

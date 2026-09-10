@@ -38,7 +38,7 @@ const breadcrumbsLd = breadcrumbSchema(breadcrumbItems.map((b) => ({ name: b.nam
   <Breadcrumbs items={breadcrumbItems} />
 
   <Container size="wide" class="section">
-    <SectionTitle
+    <SectionTitle level="h1"
       kicker="Destinations"
       heading="Every destination we've researched for families"
       supporting="Chosen and written by editors who plan around nap times and school terms, not just flight deals."
@@ -54,6 +54,7 @@ const breadcrumbsLd = breadcrumbSchema(breadcrumbItems.map((b) => ({ name: b.nam
             name={entry.data.title}
             teaser={entry.data.description}
             priority={i === 0}
+            headingLevel="h2"
           />
         ))}
       </div>
